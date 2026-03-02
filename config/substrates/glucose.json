@@ -1,0 +1,44 @@
+{
+  "substrate": {
+    "name": "Glucose",
+    "molecular_formula": "C6H12O6",
+    "molecular_weight": 180.16,
+    "unit": "mg/L"
+  },
+  "initial_guesses": {
+    "qmax": 30.0,
+    "Ks": 400.0,
+    "Ki": 10000.0,
+    "Y": 0.4,
+    "b_decay": 0.0002,
+    "K_o2": 0.15,
+    "Y_o2": 0.9,
+    "lag_time": 0.08
+  },
+  "bounds": {
+    "qmax": [20.0, 50.0],
+    "Ks": [1.0, 500.0],
+    "Ki": [1.0, 50000.0],
+    "Y": [0.01, 0.6],
+    "b_decay": [0.0001, 0.0003],
+    "K_o2": [0.1, 2.0],
+    "Y_o2": [0.8, 1.08],
+    "lag_time": [0.05, 0.1]
+  },
+  "oxygen": {
+    "o2_max": 8.0,
+    "o2_min": 0.1,
+    "reaeration_rate": 15.0,
+    "o2_range": 8.0
+  },
+  "simulation": {
+    "t_final": 0.5,
+    "num_points": 10000,
+    "time_unit": "days"
+  },
+  "notes": {
+    "description": "Configuration for glucose fermentation kinetics",
+    "typical_yield": "",
+    "reference": " "
+  }
+}

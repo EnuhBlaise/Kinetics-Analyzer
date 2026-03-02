@@ -1,0 +1,37 @@
+# Ignore everything by default
+*
+
+# Allow these directories and their contents
+!config/
+!config/**
+!docs/USER_GUIDE.md
+!scripts/
+!scripts/**
+!src/
+!src/**
+!streamlit_app/
+!streamlit_app/**
+!tests/
+!tests/**
+!workflows/
+!workflows/**
+
+# Allow specific root files
+!*.toml
+!requirements.txt
+!.gitignore
+
+# Allow docs directory structure for USER_GUIDE.md
+!docs/
+
+# Standard ignores within allowed directories
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg-info/
+*.egg
+.pytest_cache/
+.coverage
+htmlcov/
+.DS_Store

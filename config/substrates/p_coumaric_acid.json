@@ -1,0 +1,44 @@
+{
+  "substrate": {
+    "name": "pCoumaricAcid",
+    "molecular_formula": "C9H8O3",
+    "molecular_weight": 164.16,
+    "unit": "mg/L"
+  },
+  "initial_guesses": {
+    "qmax": 10.0,
+    "Ks": 50.0,
+    "Ki": 1500.0,
+    "Y": 0.25,
+    "b_decay": 0.0002,
+    "K_o2": 0.1,
+    "Y_o2": 0.9,
+    "lag_time": 0.5
+  },
+  "bounds": {
+    "qmax": [5.0, 20.0],
+    "Ks": [1.0, 500.0],
+    "Ki": [1.0, 2000.0],
+    "Y": [0.01, 0.9],
+    "b_decay": [0.0001, 0.0003],
+    "K_o2": [0.01, 2.0],
+    "Y_o2": [0.05, 1.22],
+    "lag_time": [0.1, 1.5]
+  },
+  "oxygen": {
+    "o2_max": 8.0,
+    "o2_min": 0.1,
+    "reaeration_rate": 15.0,
+    "o2_range": 8.0
+  },
+  "simulation": {
+    "t_final": 2.0,
+    "num_points": 10000,
+    "time_unit": "days"
+  },
+  "notes": {
+    "description": "Configuration for p-coumaric acid degradation kinetics",
+    "typical_yield": "0.25 mgCells/mgpCoumaricAcid",
+    "reference": ""
+  }
+}

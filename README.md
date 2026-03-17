@@ -2,6 +2,9 @@
 
 ## Overview
 
+<img width="2970" height="2070" alt="substrate_summary" src="https://github.com/user-attachments/assets/70f469e6-5de0-471c-ad90-e795a37c49a1" />
+Fig: Substrate consumption modelled vs experimental data p-coumaric acid.
+
 The Kinetic Parameter Estimation Software is a tool for fitting Monod kinetic parameters to microbial growth data. It supports eight model variants organized into four families, each available with or without Haldane substrate inhibition (Ki):
 
 | Model | Parameters | Description |

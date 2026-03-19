@@ -2,7 +2,8 @@
 
 ## Overview
 <img width="1601" height="888" alt="Screenshot 2026-03-19 at 1 46 18 AM" src="https://github.com/user-attachments/assets/10b28e5a-0266-447f-b90a-40ddb79a860d" />
-**Fig:** UI interface with Streamlit.
+
+**Fig**: UI interface with Streamlit.
 
 The Kinetic Parameter Estimation Software is a tool for fitting Monod kinetic parameters to microbial growth data. It supports eight model variants organized into four families, each available with or without Haldane substrate inhibition (Ki):
 
@@ -75,7 +76,8 @@ Edit the JSON file to update:
 ### 3. Run Parameter Fitting
 
 <img width="2970" height="2070" alt="substrate_summary" src="https://github.com/user-attachments/assets/70f469e6-5de0-471c-ad90-e795a37c49a1" />
-**Fig:** Substrate consumption modelled vs experimental data p-coumaric acid.
+
+**Fig**: Substrate consumption modelled vs experimental data p-coumaric acid.
 
 ```bash
 # Fit parameters using the dual Monod + lag model (with Ki / Haldane)

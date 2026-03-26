@@ -10,13 +10,13 @@ The Kinetic Parameter Estimation Software is a tool for fitting Monod kinetic pa
 | Model | Parameters | Description |
 |-------|-----------|-------------|
 | **Single Monod** | 4: qmax, Ks, Y, b_decay | Basic Monod without substrate inhibition |
-| **Single Monod (Haldane)** | 5: + Ki | Haldane model with substrate inhibition |
-| **Single Monod + Lag** | 5: + lag_time | Lag phase, no oxygen dynamics |
-| **Single Monod + Lag (Haldane)** | 6: + Ki | Lag phase with substrate inhibition |
-| **Dual Monod** | 6: + K_o2, Y_o2 | Oxygen dynamics, no inhibition |
-| **Dual Monod (Haldane)** | 7: + Ki | Oxygen dynamics with substrate inhibition |
-| **Dual Monod + Lag** | 7: + lag_time | Oxygen dynamics with lag phase |
-| **Dual Monod + Lag (Haldane)** | 8: + Ki | Full model with lag phase and inhibition |
+| **Single Monod (Haldane)** | 5: +qmax, Ks, Yx/s, b_decay, Ki| Haldane model with substrate inhibition |
+| **Single Monod + Lag** | 5:qmax, Ks, Yx/s, b_decay, t_lag| Lag phase, no oxygen dynamics |
+| **Single Monod + Lag (Haldane)** | 6: qmax, Ks, Yx/s, b_decay, Ki, t_lag | Lag phase with substrate inhibition |
+| **Dual Monod** | 6: qmax, Ks, Yx/s, b_decay, Yo2, Ko2 | Oxygen dynamics, no inhibition |
+| **Dual Monod (Haldane)** | 7:qmax, Ks, Yx/s, b_decay, Yo2, Ko2, Ki| Oxygen dynamics with substrate inhibition |
+| **Dual Monod + Lag** | 7:qmax, Ks, Yx/s, b_decay, Yo2, Ko2, t_lag| Oxygen dynamics with lag phase |
+| **Dual Monod + Lag (Haldane)** | 8:qmax, Ks, Yx/s, b_decay, Yo2, Ko2, Ki, t_lag | Full model with lag phase and inhibition |
 
 ## Installation
 

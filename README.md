@@ -75,9 +75,6 @@ Edit the JSON file to update:
 
 ### 3. Run Parameter Fitting
 
-<img width="2970" height="2070" alt="substrate_summary" src="https://github.com/user-attachments/assets/70f469e6-5de0-471c-ad90-e795a37c49a1" />
-
-**Fig**: Substrate consumption modelled vs experimental data p-coumaric acid.
 
 ```bash
 # Fit parameters using the dual Monod + lag model (with Ki / Haldane)

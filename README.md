@@ -28,7 +28,7 @@ The Kinetic Parameter Estimation Software is a tool for fitting Monod kinetic pa
 
 ```bash
 # Clone or download the repository
-cd kinetic_estimation
+cd Kinetics-Analyzer
 
 # Create a virtual environment (recommended)
 python -m venv venv

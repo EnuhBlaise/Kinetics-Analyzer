@@ -26,6 +26,38 @@ import pandas as pd
 
 warnings.filterwarnings("ignore")
 
+# ── Canonical substrate display order ───────────────────────────────────────
+SUBSTRATE_ORDER = [
+    "Glucose",
+    "Xylose",
+    "SyringicAcid",
+    "VanillicAcid",
+    "pCoumaricAcid",
+    "pHydroxybenzoicAcid",
+]
+
+SUBSTRATE_DISPLAY = {
+    "Glucose": "Glucose",
+    "Xylose": "Xylose",
+    "SyringicAcid": "Syringic Acid",
+    "VanillicAcid": "Vanillic Acid",
+    "pCoumaricAcid": "p-Coumaric Acid",
+    "pHydroxybenzoicAcid": "p-Hydroxybenzoic Acid",
+}
+
+
+def _ordered_substrates(substrates):
+    """Return substrates in canonical order, appending any unknowns at the end."""
+    ordered = [s for s in SUBSTRATE_ORDER if s in substrates]
+    extras = [s for s in substrates if s not in SUBSTRATE_ORDER]
+    return ordered + sorted(extras)
+
+
+def _display(substrate):
+    """Return a display-friendly substrate name."""
+    return SUBSTRATE_DISPLAY.get(substrate, substrate)
+
+
 # ── Okabe-Ito colorblind-safe palette ───────────────────────────────────────
 MODEL_COLORS = {
     "Single Monod":                   "#0072B2",
@@ -60,12 +92,17 @@ METRIC_MARKERS = ["^", "s", "o"]    # ▲ ■ ●
 METRIC_COLORS  = ["#333333", "#333333", "#333333"]
 
 plt.rcParams.update({
-    "font.family":  "serif",
-    "font.serif":   ["Times New Roman", "DejaVu Serif"],
-    "font.size":    8,
-    "pdf.fonttype": 42,
-    "ps.fonttype":  42,
-    "axes.linewidth": 0.6,
+    "font.family":    "sans-serif",
+    "font.sans-serif":["Arial", "Helvetica", "DejaVu Sans"],
+    "font.size":      12,
+    "axes.titlesize": 12,
+    "axes.labelsize": 12,
+    "xtick.labelsize":12,
+    "ytick.labelsize":12,
+    "legend.fontsize":10,
+    "pdf.fonttype":   42,
+    "ps.fonttype":    42,
+    "axes.linewidth":  0.6,
 })
 
 
@@ -92,7 +129,7 @@ def make_figure(csv_path,
                 out_png="consensus_publication.png"):
 
     df = pd.read_csv(csv_path)
-    substrates = sorted(df["Substrate"].unique())
+    substrates = _ordered_substrates(df["Substrate"].unique().tolist())
     n_sub = len(substrates)
     n_mod = len(MODEL_ORDER)
 
@@ -170,17 +207,18 @@ def make_figure(csv_path,
 
     # ── axes labels ──────────────────────────────────────────────────────────
     ax.set_xticks(range(n_sub))
-    ax.set_xticklabels(substrates, fontsize=8, fontweight="bold", rotation=30,
+    ax.set_xticklabels([_display(s) for s in substrates],
+                       fontweight="bold", rotation=30,
                        ha="right", rotation_mode="anchor")
 
     ax.set_yticks(range(n_mod))
-    ax.set_yticklabels(MODEL_ORDER, fontsize=8)
+    ax.set_yticklabels(MODEL_ORDER)
 
-    ax.set_xlabel("Substrate", fontsize=9, fontweight="bold", labelpad=6)
-    ax.set_ylabel("Model  (simple \u2192 complex)", fontsize=9,
+    ax.set_xlabel("Substrate", fontweight="bold", labelpad=6)
+    ax.set_ylabel("Model  (simple -> complex)",
                   fontweight="bold", labelpad=6)
     ax.set_title("Consensus Model Selection",
-                 fontsize=11, fontweight="bold", pad=10)
+                 fontweight="bold", pad=10)
 
     # subtle shading alternating model rows
     for yi in range(n_mod):
@@ -201,10 +239,10 @@ def make_figure(csv_path,
         for m in MODEL_ORDER
     ]
     leg1 = ax.legend(handles=swatch_handles,
-                     title="Model", title_fontsize=7.5,
+                     title="Model", title_fontsize=10,
                      loc="upper left",
                      bbox_to_anchor=(1.01, 1.0),
-                     fontsize=7, frameon=True, framealpha=1,
+                     fontsize=9, frameon=True, framealpha=1,
                      edgecolor="#CCCCCC",
                      handlelength=1.0, handletextpad=0.5,
                      borderpad=0.6)
@@ -218,10 +256,10 @@ def make_figure(csv_path,
         for n in [1, 2, 3]
     ]
     leg2 = ax.legend(handles=size_handles,
-                     title="Votes (dot size)", title_fontsize=7.5,
+                     title="Votes (dot size)", title_fontsize=10,
                      loc="upper left",
                      bbox_to_anchor=(1.01, 0.52),
-                     fontsize=7, frameon=True, framealpha=1,
+                     fontsize=9, frameon=True, framealpha=1,
                      edgecolor="#CCCCCC",
                      handletextpad=0.5, borderpad=0.6)
     ax.add_artist(leg2)
@@ -230,23 +268,23 @@ def make_figure(csv_path,
     shape_handles = [
         ax.scatter([], [], s=220, color="#888", marker="*",
                    edgecolors="#222", linewidths=0.8,
-                   label="★  Consensus winner"),
+                   label="*  Consensus winner"),
         ax.scatter([], [], s=220, color="#888", marker="o",
                    edgecolors="white", linewidths=0.8,
-                   label="●  Non-winning vote"),
+                   label="o  Non-winning vote"),
     ]
     orbit_handles = [
         ax.scatter([], [], s=38, marker=mk, color="white",
                    edgecolors="#444", linewidths=0.8,
                    label=f"  {mk_label}")
         for mk, mk_label in zip(METRIC_MARKERS,
-                                ["▲  AIC voted", "■  R² voted", "●  SSE voted"])
+                                ["^  AIC voted", "s  R2 voted", "o  SSE voted"])
     ]
     leg3 = ax.legend(handles=shape_handles + orbit_handles,
-                     title="Shape / orbit key", title_fontsize=7.5,
+                     title="Shape / orbit key", title_fontsize=10,
                      loc="upper left",
                      bbox_to_anchor=(1.01, 0.22),
-                     fontsize=7, frameon=True, framealpha=1,
+                     fontsize=9, frameon=True, framealpha=1,
                      edgecolor="#CCCCCC",
                      handletextpad=0.5, borderpad=0.6)
 

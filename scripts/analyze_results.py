@@ -43,6 +43,70 @@ from src.core.solvers import solve_ode
 # Suppress matplotlib warnings for clean output
 warnings.filterwarnings("ignore", category=UserWarning, module="matplotlib")
 
+# ── Global font settings: Arial 12pt ─────────────────────────────────
+plt.rcParams.update({
+    "font.family": "sans-serif",
+    "font.sans-serif": ["Arial", "Helvetica", "DejaVu Sans"],
+    "font.size": 12,
+    "axes.titlesize": 12,
+    "axes.labelsize": 12,
+    "xtick.labelsize": 12,
+    "ytick.labelsize": 12,
+    "legend.fontsize": 10,
+    "figure.titlesize": 14,
+})
+
+# ── Canonical substrate display order ────────────────────────────────
+SUBSTRATE_ORDER = [
+    "Glucose",
+    "Xylose",
+    "SyringicAcid",
+    "VanillicAcid",
+    "pCoumaricAcid",
+    "pHydroxybenzoicAcid",
+]
+
+SUBSTRATE_DISPLAY = {
+    "Glucose": "Glucose",
+    "Xylose": "Xylose",
+    "SyringicAcid": "Syringic Acid",
+    "VanillicAcid": "Vanillic Acid",
+    "pCoumaricAcid": "p-Coumaric Acid",
+    "pHydroxybenzoicAcid": "p-Hydroxybenzoic Acid",
+}
+
+
+def _ordered_substrates(substrates):
+    """Return substrates in canonical order, appending any unknowns at the end."""
+    ordered = [s for s in SUBSTRATE_ORDER if s in substrates]
+    extras = [s for s in substrates if s not in SUBSTRATE_ORDER]
+    return ordered + sorted(extras)
+
+
+def _display(substrate):
+    """Return a display-friendly substrate name."""
+    return SUBSTRATE_DISPLAY.get(substrate, substrate)
+
+
+# ── Canonical model complexity order (simple → complex) ─────────────
+MODEL_ORDER = [
+    "Single Monod",
+    "Single Monod (Haldane)",
+    "Single Monod + Lag",
+    "Single Monod + Lag (Haldane)",
+    "Dual Monod",
+    "Dual Monod (Haldane)",
+    "Dual Monod + Lag",
+    "Dual Monod + Lag (Haldane)",
+]
+
+
+def _ordered_models(models):
+    """Return models in complexity order, appending any unknowns at the end."""
+    ordered = [m for m in MODEL_ORDER if m in models]
+    extras = [m for m in models if m not in MODEL_ORDER]
+    return ordered + sorted(extras)
+
 
 # ── CLI ──────────────────────────────────────────────────────────────
 
@@ -178,19 +242,20 @@ def figure_a_r2_heatmap(
                 val = matrix[i, j]
                 if np.isnan(val):
                     ax.text(j, i, "N/A", ha="center", va="center",
-                            fontsize=9, color="#888888", fontweight="bold")
+                            fontsize=12, color="#888888", fontweight="bold")
                 else:
                     # White text on dark cells, black on light
                     text_color = "white" if val < 0.5 else "black"
                     ax.text(j, i, f"{val:.3f}", ha="center", va="center",
-                            fontsize=9, color=text_color, fontweight="bold")
+                            fontsize=12, color=text_color, fontweight="bold")
 
         ax.set_xticks(range(n_mod))
-        ax.set_xticklabels(models, rotation=45, ha="right", fontsize=9)
+        ax.set_xticklabels(models, rotation=45, ha="right")
         ax.set_yticks(range(n_sub))
-        ax.set_yticklabels(substrates, fontsize=10)
-        ax.set_title(title, fontsize=13, fontweight="bold", pad=12)
-        fig.colorbar(im, ax=ax, fraction=0.046, pad=0.04)
+        ax.set_yticklabels([_display(s) for s in substrates])
+        ax.set_title(title, fontweight="bold", pad=12)
+        cbar = fig.colorbar(im, ax=ax, fraction=0.046, pad=0.04)
+        cbar.ax.tick_params(labelsize=12)
 
     fig.suptitle("Model Performance: R² by Component", fontsize=14, fontweight="bold", y=1.02)
     plt.tight_layout()
@@ -255,19 +320,20 @@ def figure_b_delta_aic(
             # Mark best model (ΔAIC = 0) with a star
             if val is not None and not np.isnan(val) and val == 0:
                 ax.annotate(
-                    "\u2605", xy=(x[i] + offset, 0),
+                    "*", xy=(x[i] + offset, 0),
                     xytext=(0, -14), textcoords="offset points",
-                    ha="center", va="top", fontsize=14, color=model_color[model],
+                    ha="center", va="top", fontsize=18, color=model_color[model],
+                    fontweight="bold",
                 )
 
     ax.set_xticks(x)
-    ax.set_xticklabels(substrates, fontsize=10)
-    ax.set_ylabel("\u0394AIC (relative to best model)", fontsize=11)
-    ax.set_title("Model Selection: \u0394AIC by Substrate", fontsize=13, fontweight="bold")
+    ax.set_xticklabels([_display(s) for s in substrates], rotation=30, ha="right")
+    ax.set_ylabel("\u0394AIC (relative to best model)")
+    ax.set_title("Model Selection: \u0394AIC by Substrate", fontweight="bold")
     style_axis(ax, legend=False, grid=True)
     ax.legend(
         bbox_to_anchor=(1.05, 1), loc="upper left",
-        frameon=True, fontsize=9,
+        frameon=True, fontsize=10,
     )
     plt.tight_layout()
 
@@ -318,7 +384,7 @@ def figure_c_cv_dotplot(
     if not params_present:
         params_present = sorted(df["param"].unique())
 
-    substrates_sorted = sorted(best_models.keys())
+    substrates_sorted = _ordered_substrates(list(best_models.keys()))
 
     fig, ax = plt.subplots(figsize=(12, 7), dpi=dpi)
 
@@ -342,29 +408,30 @@ def figure_c_cv_dotplot(
             ax.scatter(j, i, s=size, c=[color], edgecolors="black",
                        linewidths=0.5, zorder=5)
             ax.text(j, i - 0.35, f"{cv:.0f}%", ha="center", va="top",
-                    fontsize=7, color="#444444")
+                    fontsize=10, color="#444444")
 
     # Y-axis labels: substrate + model name
     y_labels = [
-        f"{sub}\n({best_models[sub][0]})" for sub in substrates_sorted
+        f"{_display(sub)}\n({best_models[sub][0]})" for sub in substrates_sorted
     ]
     ax.set_yticks(range(len(substrates_sorted)))
-    ax.set_yticklabels(y_labels, fontsize=9)
+    ax.set_yticklabels(y_labels)
 
     ax.set_xticks(range(len(params_present)))
-    ax.set_xticklabels(params_present, fontsize=10, rotation=45, ha="right")
+    ax.set_xticklabels(params_present, rotation=45, ha="right")
 
     ax.set_xlim(-0.5, len(params_present) - 0.5)
     ax.set_ylim(-0.5, len(substrates_sorted) - 0.5)
 
     ax.set_title("Parameter Identifiability: CV% (Best Model per Substrate)",
-                 fontsize=13, fontweight="bold")
+                 fontweight="bold")
 
     # Colorbar
     sm = plt.cm.ScalarMappable(cmap=cmap, norm=norm)
     sm.set_array([])
     cbar = fig.colorbar(sm, ax=ax, fraction=0.03, pad=0.04)
-    cbar.set_label("CV (%)", fontsize=11)
+    cbar.set_label("CV (%)")
+    cbar.ax.tick_params(labelsize=12)
 
     style_axis(ax, legend=False, grid=True)
     plt.tight_layout()
@@ -412,7 +479,7 @@ def figure_d_residuals(
     dpi: int,
 ):
     """Residual scatter plots for the best model per substrate."""
-    substrates_sorted = sorted(best_models.keys())
+    substrates_sorted = _ordered_substrates(list(best_models.keys()))
     n = len(substrates_sorted)
 
     # Determine grid layout
@@ -444,7 +511,7 @@ def figure_d_residuals(
         if not all([model_type, global_params, config_path, data_path]):
             ax.text(0.5, 0.5, "Data unavailable", transform=ax.transAxes,
                     ha="center", va="center")
-            ax.set_title(f"{substrate}\n({model_name})", fontsize=10, fontweight="bold")
+            ax.set_title(f"{_display(substrate)}\n({model_name})", fontweight="bold")
             continue
 
         try:
@@ -458,8 +525,8 @@ def figure_d_residuals(
             )
         except Exception as e:
             ax.text(0.5, 0.5, f"Load error:\n{e}", transform=ax.transAxes,
-                    ha="center", va="center", fontsize=8)
-            ax.set_title(f"{substrate}\n({model_name})", fontsize=10, fontweight="bold")
+                    ha="center", va="center", fontsize=10)
+            ax.set_title(f"{_display(substrate)}\n({model_name})", fontweight="bold")
             continue
 
         autocorrs = []
@@ -493,10 +560,9 @@ def figure_d_residuals(
                     autocorrs.append(r)
 
         ax.axhline(y=0, color="black", linestyle="--", linewidth=1, alpha=0.5)
-        ax.set_title(f"{substrate}\n({model_name})", fontsize=10, fontweight="bold")
-        ax.set_xlabel("Time (days)", fontsize=9)
-        ax.set_ylabel("Normalized Residual", fontsize=9)
-        ax.tick_params(labelsize=8)
+        ax.set_title(f"{_display(substrate)}\n({model_name})", fontweight="bold")
+        ax.set_xlabel("Time (days)")
+        ax.set_ylabel("Normalized Residual")
 
         # Autocorrelation annotation
         if autocorrs:
@@ -504,7 +570,7 @@ def figure_d_residuals(
             ax.text(
                 0.97, 0.97, f"Mean lag-1\nautocorr: {mean_ac:.2f}",
                 transform=ax.transAxes, ha="right", va="top",
-                fontsize=7, bbox=dict(boxstyle="round,pad=0.3",
+                fontsize=10, bbox=dict(boxstyle="round,pad=0.3",
                                       facecolor="wheat", alpha=0.8),
             )
 
@@ -516,7 +582,7 @@ def figure_d_residuals(
             Line2D([0], [0], marker="^", color="gray", linestyle="None",
                    markersize=5, label="Biomass"),
         ]
-        ax.legend(handles=legend_elements, loc="lower right", fontsize=7,
+        ax.legend(handles=legend_elements, loc="lower right", fontsize=10,
                   framealpha=0.8)
 
     # Hide unused panels
@@ -587,22 +653,22 @@ def figure_e_total_error_bars(
             # Mark lowest error (first in sorted order) with a star
             if slot == 0 and not np.isnan(val):
                 ax.annotate(
-                    "\u2605", xy=(x[i] + offset, val),
+                    "*", xy=(x[i] + offset, val),
                     xytext=(0, 5), textcoords="offset points",
-                    ha="center", va="bottom", fontsize=12,
-                    color=model_color[model],
+                    ha="center", va="bottom", fontsize=18,
+                    color=model_color[model], fontweight="bold",
                 )
 
     ax.set_yscale("log")
     ax.set_xticks(x)
-    ax.set_xticklabels(substrates, fontsize=10)
-    ax.set_ylabel("Total Error (SSE, log scale)", fontsize=11)
+    ax.set_xticklabels([_display(s) for s in substrates], rotation=30, ha="right")
+    ax.set_ylabel("Total Error (SSE, log scale)")
     ax.set_title("Total Error Across Model Families by Substrate",
-                 fontsize=13, fontweight="bold")
+                 fontweight="bold")
     style_axis(ax, legend=False, grid=True)
     ax.legend(
         bbox_to_anchor=(1.05, 1), loc="upper left",
-        frameon=True, fontsize=9,
+        frameon=True, fontsize=10,
     )
     plt.tight_layout()
 
@@ -656,7 +722,7 @@ def figure_f_total_error_heatmap(
             val = matrix[i, j]
             if np.isnan(val):
                 ax.text(j, i, "N/A", ha="center", va="center",
-                        fontsize=8, color="#888888")
+                        fontsize=12, color="#888888")
             else:
                 raw = 10 ** val
                 # Format: e.g., "8.8e5" or "5.6e7"
@@ -671,17 +737,18 @@ def figure_f_total_error_heatmap(
                         fill=False, edgecolor="black", linewidth=2.5,
                     ))
                 ax.text(j, i, txt, ha="center", va="center",
-                        fontsize=8, color=text_color, fontweight=fw)
+                        fontsize=12, color=text_color, fontweight=fw)
 
     ax.set_xticks(range(n_mod))
-    ax.set_xticklabels(models, rotation=45, ha="right", fontsize=9)
+    ax.set_xticklabels(models, rotation=45, ha="right")
     ax.set_yticks(range(n_sub))
-    ax.set_yticklabels(substrates, fontsize=10)
-    ax.set_title("Total Error: log\u2081\u2080(SSE) by Substrate \u00d7 Model",
-                 fontsize=13, fontweight="bold", pad=12)
+    ax.set_yticklabels([_display(s) for s in substrates])
+    ax.set_title("Total Error: log10(SSE) by Substrate x Model",
+                 fontweight="bold", pad=12)
 
     cbar = fig.colorbar(im, ax=ax, fraction=0.046, pad=0.04)
-    cbar.set_label("log\u2081\u2080(Total Error)", fontsize=11)
+    cbar.set_label("log10(Total Error)")
+    cbar.ax.tick_params(labelsize=12)
 
     plt.tight_layout()
 
@@ -837,14 +904,14 @@ def figure_g_parameter_dotplots(
                 edgecolors='black' if is_best else color,
                 linewidths=1.0 if is_best else 0.5,
                 zorder=zorder,
-                label=f"{model}{' ★' if is_best else ''}",
+                label=f"{model}{' *' if is_best else ''}",
             )
             legend_handles.append(handle)
 
         ax.set_yticks(y_positions)
-        ax.set_yticklabels([label for _, label in params_present], fontsize=10)
-        ax.set_xlabel('Parameter Value', fontsize=10)
-        ax.set_title(substrate, fontsize=12, fontweight='bold')
+        ax.set_yticklabels([label for _, label in params_present])
+        ax.set_xlabel('Parameter Value')
+        ax.set_title(_display(substrate), fontweight='bold')
         ax.set_xscale('symlog', linthresh=1e-2)  # handle wide range of param magnitudes
 
         # Light horizontal gridlines for readability
@@ -856,7 +923,7 @@ def figure_g_parameter_dotplots(
 
         # Legend in each subplot
         ax.legend(
-            fontsize=7, loc='lower right',
+            fontsize=9, loc='lower right',
             framealpha=0.9, handletextpad=0.5,
             markerscale=0.6,
         )
@@ -867,7 +934,7 @@ def figure_g_parameter_dotplots(
         axes[row, col].set_visible(False)
 
     fig.suptitle(
-        'Parameter Comparison Across Models (★ = Best AIC)',
+        'Parameter Comparison Across Models (* = Best AIC)',
         fontsize=14, fontweight='bold', y=1.02,
     )
     plt.tight_layout()
@@ -893,8 +960,8 @@ def main():
         return 1
 
     master_df = pd.read_csv(master_path)
-    substrates = sorted(master_df["Substrate"].unique())
-    models = sorted(master_df["Model"].unique())
+    substrates = _ordered_substrates(master_df["Substrate"].unique().tolist())
+    models = _ordered_models(master_df["Model"].unique().tolist())
 
     print("=" * 60)
     print("PUBLICATION ANALYSIS FIGURES")

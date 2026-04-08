@@ -161,7 +161,13 @@ def plot_experimental_data(
 
     if save_path:
         fig.savefig(save_path, bbox_inches="tight", dpi=dpi)
-        print(f"Saved → {save_path}")
+        pdf_path = Path(save_path).with_suffix(".pdf")
+        if str(pdf_path) != str(save_path):
+            fig.savefig(pdf_path, bbox_inches="tight")
+            print(f"Saved → {save_path}")
+            print(f"Saved → {pdf_path}")
+        else:
+            print(f"Saved → {save_path}")
 
     if show:
         plt.show()

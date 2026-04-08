@@ -1062,6 +1062,7 @@ class IndividualConditionWorkflow:
         fig_sub = self._plot_substrate_summary(condition_results)
         path = output_dir / 'substrate_summary.png'
         fig_sub.savefig(path, dpi=300, bbox_inches='tight')
+        fig_sub.savefig(path.with_suffix('.pdf'), bbox_inches='tight')
         figures.append(path)
         plt.close(fig_sub)
 
@@ -1069,6 +1070,7 @@ class IndividualConditionWorkflow:
         fig_bio = self._plot_biomass_summary(condition_results)
         path = output_dir / 'biomass_summary.png'
         fig_bio.savefig(path, dpi=300, bbox_inches='tight')
+        fig_bio.savefig(path.with_suffix('.pdf'), bbox_inches='tight')
         figures.append(path)
         plt.close(fig_bio)
 
@@ -1076,6 +1078,7 @@ class IndividualConditionWorkflow:
         fig_params = self._plot_parameter_comparison(condition_results)
         path = output_dir / 'parameter_comparison.png'
         fig_params.savefig(path, dpi=300, bbox_inches='tight')
+        fig_params.savefig(path.with_suffix('.pdf'), bbox_inches='tight')
         figures.append(path)
         plt.close(fig_params)
 
@@ -1083,6 +1086,7 @@ class IndividualConditionWorkflow:
         fig_resid = self._plot_residual_diagnostics(condition_results)
         path = output_dir / 'residual_diagnostics.png'
         fig_resid.savefig(path, dpi=300, bbox_inches='tight')
+        fig_resid.savefig(path.with_suffix('.pdf'), bbox_inches='tight')
         figures.append(path)
         plt.close(fig_resid)
 
@@ -1090,6 +1094,7 @@ class IndividualConditionWorkflow:
         fig_ci = self._plot_confidence_intervals(condition_results)
         path = output_dir / 'confidence_intervals.png'
         fig_ci.savefig(path, dpi=300, bbox_inches='tight')
+        fig_ci.savefig(path.with_suffix('.pdf'), bbox_inches='tight')
         figures.append(path)
         plt.close(fig_ci)
 
@@ -1097,6 +1102,7 @@ class IndividualConditionWorkflow:
         fig_gof = self._plot_goodness_of_fit(condition_results)
         path = output_dir / 'goodness_of_fit.png'
         fig_gof.savefig(path, dpi=300, bbox_inches='tight')
+        fig_gof.savefig(path.with_suffix('.pdf'), bbox_inches='tight')
         figures.append(path)
         plt.close(fig_gof)
 
@@ -1104,6 +1110,7 @@ class IndividualConditionWorkflow:
         fig_ci_diag = self._plot_ci_diagnostics(condition_results, global_ci_diagnostics)
         path = output_dir / 'ci_diagnostics.png'
         fig_ci_diag.savefig(path, dpi=300, bbox_inches='tight')
+        fig_ci_diag.savefig(path.with_suffix('.pdf'), bbox_inches='tight')
         figures.append(path)
         plt.close(fig_ci_diag)
 
@@ -1112,6 +1119,7 @@ class IndividualConditionWorkflow:
             if fig_trace is not None:
                 path = output_dir / 'mcmc_trace_plots.png'
                 fig_trace.savefig(path, dpi=300, bbox_inches='tight')
+                fig_trace.savefig(path.with_suffix('.pdf'), bbox_inches='tight')
                 figures.append(path)
                 plt.close(fig_trace)
 

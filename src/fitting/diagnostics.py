@@ -836,6 +836,7 @@ class OptimizerDiagnostics:
         fig.tight_layout()
         if output_path:
             fig.savefig(output_path, dpi=150, bbox_inches='tight')
+            fig.savefig(str(Path(output_path).with_suffix('.pdf')), bbox_inches='tight')
         return fig
 
     def plot_profiles(
@@ -880,6 +881,7 @@ class OptimizerDiagnostics:
         fig.tight_layout()
         if output_path:
             fig.savefig(output_path, dpi=150, bbox_inches='tight')
+            fig.savefig(str(Path(output_path).with_suffix('.pdf')), bbox_inches='tight')
         return fig
 
     def plot_contours(
@@ -934,6 +936,7 @@ class OptimizerDiagnostics:
         fig.tight_layout()
         if output_path:
             fig.savefig(output_path, dpi=150, bbox_inches='tight')
+            fig.savefig(str(Path(output_path).with_suffix('.pdf')), bbox_inches='tight')
         return fig
 
     def plot_hessian(
@@ -988,6 +991,7 @@ class OptimizerDiagnostics:
         fig.tight_layout()
         if output_path:
             fig.savefig(output_path, dpi=150, bbox_inches='tight')
+            fig.savefig(str(Path(output_path).with_suffix('.pdf')), bbox_inches='tight')
         return fig
 
     def plot_convergence(
@@ -1028,6 +1032,7 @@ class OptimizerDiagnostics:
         fig.tight_layout()
         if output_path:
             fig.savefig(output_path, dpi=150, bbox_inches='tight')
+            fig.savefig(str(Path(output_path).with_suffix('.pdf')), bbox_inches='tight')
         return fig
 
     def save_all_plots(

@@ -76,7 +76,7 @@ Edit the JSON file to update:
 - Parameter bounds
 
 ### 3. Run Parameter Fitting
-**N.B : You can skip to No. 5 & 6 If you just want to generate parameters using as done in the publication.
+** N.B : You can skip to No. 5 & 6 If you just want to generate parameters as done in the publication.
 **
 ```bash
 # Fit parameters using the dual Monod + lag model (with Ki / Haldane)

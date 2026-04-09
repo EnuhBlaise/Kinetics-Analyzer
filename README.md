@@ -29,14 +29,12 @@ Note that for windows computers the forward slash has to be changed to backward 
 
 ```bash
 # Clone or download the repository
+git clone https://github.com/EnuhBlaise/Kinetics-Analyzer.git
 cd Kinetics-Analyzer
 
 # Create a virtual environment (recommended)
 python -m venv venv
 source venv/bin/activate  # On Windows: venv\Scripts\activate
-
-# Clone the repo
-git clone https://github.com/EnuhBlaise/Kinetics-Analyzer.git
 
 # Install dependencies
 pip install -r requirements.txt
@@ -78,7 +76,7 @@ Edit the JSON file to update:
 - Parameter bounds
 
 ### 3. Run Parameter Fitting
-
+# You can skip to No. 5 & 6 If you just want to generate parameters using as done in the publication.
 
 ```bash
 # Fit parameters using the dual Monod + lag model (with Ki / Haldane)

@@ -6,7 +6,7 @@ The Kinetic Parameter Estimation Software is a tool for fitting Monod kinetic pa
 
 | Model | Parameters | Description |
 |-------|-----------|-------------|
-| **Single Monod** | 4: qmax, Ks, Y, b_decay | Basic Monod without substrate inhibition |
+| **Single Monod** | 4: μ_max, Ks, Y, b_decay | Basic Monod without substrate inhibition |
 | **Single Monod (Haldane)** | 5: + Ki | Haldane model with substrate inhibition |
 | **Single Monod + Lag** | 5: + lag_time | Lag phase, no oxygen dynamics |
 | **Single Monod + Lag (Haldane)** | 6: + Ki | Lag phase with substrate inhibition |
@@ -276,7 +276,7 @@ Core options:
   -c, --config PATH    Substrate configuration JSON file (required)
   -d, --data PATH      Experimental data CSV file (required)
   -m, --model TYPE     Model type (default: single_monod):
-                        single_monod       — Single Monod (4 params: qmax, Ks, Y, b_decay)
+                        single_monod       — Single Monod (4 params: μ_max, Ks, Y, b_decay)
                         single_haldane     — Single Monod + Haldane (5 params: + Ki)
                         single_monod_lag   — Single Monod + Lag (5 params: + lag_time)
                         single_haldane_lag — Single Monod + Lag + Haldane (6 params: + Ki)
@@ -424,7 +424,7 @@ Options:
   --skip-hessian       Skip Hessian analysis
   --skip-convergence   Skip convergence trace
   --profile-params P [P ...]  Only profile specific parameters
-  --contour-pairs P [P ...]   Parameter pairs (e.g. 'qmax,Ks qmax,b_decay')
+  --contour-pairs P [P ...]   Parameter pairs (e.g. 'μ_max,Ks μ_max,b_decay')
   --scale-params       Run re-optimisations in [0,1]-normalised parameter space
   -v, --verbose        Verbose output
 
@@ -484,7 +484,7 @@ The tool computes:
 - **Theoretical maximum yield (Y_max)** — from electron balance (γ_S / γ_B)
 - **Theoretical oxygen demand (ThOD)** — mg O₂ per mg substrate
 - **Y_o2 ceiling** — maximum oxygen yield from stoichiometry
-- **qmax heuristic range** — based on substrate class (sugar, aromatic, etc.)
+- **μ_max heuristic range** — based on substrate class (sugar, aromatic, etc.)
 
 ```bash
 # Report for a single substrate
@@ -621,7 +621,7 @@ Examples:
   python scripts/convert_units.py --params fitted.json --from days --to hours
 
   # Convert single value
-  python scripts/convert_units.py --value 2.5 --param qmax --from days --to minutes
+  python scripts/convert_units.py --value 2.5 --param μ_max --from days --to minutes
 
   # Convert concentration
   python scripts/convert_units.py --conc 500 --mw 150.13 --from mg/L --to mM
@@ -638,7 +638,7 @@ Examples:
     "unit": "mg/L"
   },
   "initial_guesses": {
-    "qmax": 2.5,
+    "μ_max": 2.5,
     "Ks": 400.0,
     "Ki": 25000.0,
     "Y": 0.35,
@@ -648,7 +648,7 @@ Examples:
     "lag_time": 3.2
   },
   "bounds": {
-    "qmax": [0.1, 10.0],
+    "μ_max": [0.1, 10.0],
     "Ks": [10.0, 2000.0],
     "Ki": [50.0, 50000.0],
     "Y": [0.1, 1.0],
@@ -674,7 +674,7 @@ Examples:
 
 | Parameter | Description | Typical Units |
 |-----------|-------------|---------------|
-| qmax | Maximum specific uptake rate | mg substrate/(mg cells·day) |
+| μ_max | Maximum specific uptake rate | mg substrate/(mg cells·day) |
 | Ks | Half-saturation constant | mg substrate/L |
 | Ki | Substrate inhibition constant | mg substrate/L |
 | Y | Yield coefficient | mg cells/mg substrate |
@@ -753,7 +753,7 @@ The output displays parameters in the format: `value ± half-width [lower, upper
 Example output:
 ```
 Fitted Parameters with 95% Confidence Intervals:
-  qmax: 12.45 ± 0.82 [11.63, 13.27] mgGlucose/(mgCells·day)
+  μ_max: 12.45 ± 0.82 [11.63, 13.27] mgGlucose/(mgCells·day)
   Ks: 245.3 ± 18.4 [226.9, 263.7] mgGlucose/L
   Y: 0.152 ± 0.008 [0.144, 0.160] mgCells/mgGlucose
 ```
@@ -928,8 +928,8 @@ python scripts/analyze_results.py
 |--------|-------------|
 | `Substrate` | Substrate name (e.g., Glucose) |
 | `Model` | Display name (e.g., Single Monod, Dual Monod (Haldane)) |
-| `qmax`, `Ks`, ... | Global parameter point estimates |
-| `qmax_95CI`, `Ks_95CI`, ... | 95% CI as `[lower, upper]` string |
+| `μ_max`, `Ks`, ... | Global parameter point estimates |
+| `μ_max_95CI`, `Ks_95CI`, ... | 95% CI as `[lower, upper]` string |
 | `Total_Error` | Raw SSE (substrate + biomass) across all conditions |
 | `R2` | Combined R² using global parameters |
 | `AIC` | Akaike Information Criterion |
@@ -987,7 +987,7 @@ python scripts/fit_individual.py \
 **What to look for:**
 - Does each condition converge? Check that R² > 0.8 for most conditions.
 - Do substrate and biomass curves track the data visually? Open `substrate_summary.png` and `biomass_summary.png`.
-- Are parameter values physically plausible? (e.g., Y < 1, qmax > 0)
+- Are parameter values physically plausible? (e.g., Y < 1, μ_max > 0)
 
 If the simplest model fails badly, the issue is likely in data formatting or bounds — fix those before proceeding.
 

@@ -152,7 +152,7 @@ def convert_kinetic_parameters(
 
     This function identifies which parameters have time dependencies
     and converts them appropriately:
-    - qmax: rate, converts directly with time
+    - μ_max: rate, converts directly with time
     - b_decay: rate, converts directly with time
     - Ks, Ki, K_o2, Y, Y_o2: not time-dependent, unchanged
 
@@ -165,12 +165,12 @@ def convert_kinetic_parameters(
         Dictionary with converted parameters
 
     Example:
-        >>> params = {"qmax": 2.5, "Ks": 400, "b_decay": 0.01}
+        >>> params = {"μ_max": 2.5, "Ks": 400, "b_decay": 0.01}
         >>> convert_kinetic_parameters(params, "days", "hours")
-        {"qmax": 0.104..., "Ks": 400, "b_decay": 0.000416...}
+        {"μ_max": 0.104..., "Ks": 400, "b_decay": 0.000416...}
     """
     # Parameters that have time in denominator (per time)
-    time_dependent = {"qmax", "b_decay"}
+    time_dependent = {"μ_max", "b_decay"}
 
     conversion_factor = convert_time_units(1.0, from_time_unit, to_time_unit)
 

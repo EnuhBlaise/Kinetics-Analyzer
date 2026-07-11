@@ -216,7 +216,7 @@ def create_default_config(substrate_name: str, molecular_weight: float) -> Subst
         molecular_weight=molecular_weight,
         unit="mg/L",
         initial_guesses={
-            "qmax": 2.5,
+            "μ_max": 2.5,
             "Ks": 400.0,
             "Ki": 25000.0,
             "Y": 0.35,
@@ -226,7 +226,7 @@ def create_default_config(substrate_name: str, molecular_weight: float) -> Subst
             "lag_time": 3.0
         },
         bounds={
-            "qmax": (0.1, 10.0),
+            "μ_max": (0.1, 10.0),
             "Ks": (10.0, 2000.0),
             "Ki": (50.0, 50000.0),
             "Y": (0.1, 1.0),

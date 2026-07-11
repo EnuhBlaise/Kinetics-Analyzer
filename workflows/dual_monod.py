@@ -5,11 +5,11 @@ This workflow extends the single Monod model by adding oxygen dynamics,
 suitable for aerobic systems where dissolved oxygen can become limiting.
 
 Model equations:
-    dS/dt = -(1/Y) * q * X
-    dX/dt = (q - b_decay) * X
+    dS/dt = -(1/Y) * μ * X
+    dX/dt = (μ - b_decay) * X
     dO2/dt = -r_O2 + reaeration
 
-where q = qmax * S/(Ks+S) * (1-S/Ki) * O2/(K_o2+O2)
+where μ = μ_max * S/(Ks+S) * (1-S/Ki) * O2/(K_o2+O2)
 
 Use case:
 - Aerobic batch or continuous cultures
@@ -34,7 +34,7 @@ class DualMonodWorkflow(BaseWorkflow):
     with reaeration to replenish dissolved oxygen.
 
     Parameters optimized:
-        - qmax: Maximum specific uptake rate
+        - μ_max: Maximum specific uptake rate
         - Ks: Half-saturation constant for substrate
         - Ki: Substrate inhibition constant
         - Y: Yield coefficient (biomass/substrate)
@@ -49,7 +49,7 @@ class DualMonodWorkflow(BaseWorkflow):
 
     @property
     def parameter_names(self) -> List[str]:
-        return ["qmax", "Ks", "Ki", "Y", "b_decay", "K_o2", "Y_o2"]
+        return ["μ_max", "Ks", "Ki", "Y", "b_decay", "K_o2", "Y_o2"]
 
     def create_ode_system(self, parameters: Dict[str, float]) -> DualMonodODE:
         """
@@ -62,7 +62,7 @@ class DualMonodWorkflow(BaseWorkflow):
             Configured DualMonodODE instance
         """
         return DualMonodODE(
-            qmax=parameters["qmax"],
+            μ_max=parameters["μ_max"],
             Ks=parameters["Ks"],
             Ki=parameters["Ki"],
             Y=parameters["Y"],

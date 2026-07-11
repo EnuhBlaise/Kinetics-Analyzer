@@ -7,7 +7,7 @@ Converts concentrations between mg/L, mM, and g/L.
 
 Usage:
     python scripts/convert_units.py --params fitted_params.json --from days --to hours
-    python scripts/convert_units.py --value 2.5 --param qmax --from days --to minutes
+    python scripts/convert_units.py --value 2.5 --param μ_max --from days --to minutes
     python scripts/convert_units.py --conc 500 --mw 150.13 --from mg/L --to mM
 """
 
@@ -40,8 +40,8 @@ Examples:
   Convert all parameters in a file from days to hours:
     python scripts/convert_units.py --params fitted_params.json --from days --to hours
 
-  Convert a single qmax value:
-    python scripts/convert_units.py --value 2.5 --param qmax --from days --to minutes
+  Convert a single μ_max value:
+    python scripts/convert_units.py --value 2.5 --param μ_max --from days --to minutes
 
   Convert concentration from mg/L to mM:
     python scripts/convert_units.py --conc 750.65 --mw 150.13 --from mg/L --to mM
@@ -141,7 +141,7 @@ def main():
 
         # Single parameter value conversion
         elif args.value is not None:
-            time_dependent = {"qmax", "b_decay"}
+            time_dependent = {"μ_max", "b_decay"}
 
             if args.param and args.param.lower() in time_dependent:
                 factor = convert_time_units(1.0, args.from_unit, args.to_unit)

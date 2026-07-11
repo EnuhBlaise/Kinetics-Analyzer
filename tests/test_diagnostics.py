@@ -63,9 +63,9 @@ def make_ridge_objective(true_params):
     return objective
 
 
-PARAM_NAMES = ["qmax", "Ks", "Ki"]
-BOUNDS = {"qmax": (0.5, 10.0), "Ks": (10.0, 500.0), "Ki": (100.0, 50000.0)}
-TRUE = {"qmax": 2.5, "Ks": 100.0, "Ki": 25000.0}
+PARAM_NAMES = ["μ_max", "Ks", "Ki"]
+BOUNDS = {"μ_max": (0.5, 10.0), "Ks": (10.0, 500.0), "Ki": (100.0, 50000.0)}
+TRUE = {"μ_max": 2.5, "Ks": 100.0, "Ki": 25000.0}
 
 
 # ---------------------------------------------------------------------------
@@ -131,25 +131,25 @@ class TestParameterProfiles:
             assert len(p.profile_objectives) == 15
 
     def test_sloppy_parameter_detected(self):
-        """Ridge objective should show qmax has weaker curvature than Ki."""
+        """Ridge objective should show μ_max has weaker curvature than Ki."""
         obj = make_ridge_objective([2.5, 100.0, 25000.0])
         diag = OptimizerDiagnostics(obj, PARAM_NAMES, BOUNDS, verbose=False)
 
         profiles = diag.parameter_profiles(TRUE, n_points=15)
 
-        # qmax profile curvature should be much smaller than Ki
-        # because qmax is involved in the ridge correlation
-        assert profiles["qmax"].curvature < profiles["Ki"].curvature
+        # μ_max profile curvature should be much smaller than Ki
+        # because μ_max is involved in the ridge correlation
+        assert profiles["μ_max"].curvature < profiles["Ki"].curvature
 
     def test_profile_subset(self):
         """Should profile only requested parameters."""
         obj = make_quadratic_objective([2.5, 100.0, 25000.0], [1.0, 100.0, 10000.0])
         diag = OptimizerDiagnostics(obj, PARAM_NAMES, BOUNDS, verbose=False)
 
-        profiles = diag.parameter_profiles(TRUE, n_points=10, parameters=["qmax"])
+        profiles = diag.parameter_profiles(TRUE, n_points=10, parameters=["μ_max"])
 
         assert len(profiles) == 1
-        assert "qmax" in profiles
+        assert "μ_max" in profiles
 
 
 class TestContourAnalysis:
@@ -162,12 +162,12 @@ class TestContourAnalysis:
 
         contours = diag.contour_analysis(
             TRUE,
-            param_pairs=[("qmax", "Ks")],
+            param_pairs=[("μ_max", "Ks")],
             n_grid=10
         )
 
         assert len(contours) == 1
-        key = "qmax__Ks"
+        key = "μ_max__Ks"
         assert key in contours
         cr = contours[key]
         assert isinstance(cr, ContourResult)
@@ -180,11 +180,11 @@ class TestContourAnalysis:
 
         contours = diag.contour_analysis(
             TRUE,
-            param_pairs=[("qmax", "Ki")],
+            param_pairs=[("μ_max", "Ki")],
             n_grid=15
         )
 
-        cr = contours["qmax__Ki"]
+        cr = contours["μ_max__Ki"]
         assert cr.correlation_direction == "none"
 
     def test_correlated_pair_detected(self):
@@ -199,8 +199,8 @@ class TestContourAnalysis:
 
         result = diag.hessian_analysis(TRUE)
 
-        # qmax-Ks correlation should be strong (negative because of ridge shape)
-        rho = abs(result.correlation_matrix[0, 1])  # qmax vs Ks
+        # μ_max-Ks correlation should be strong (negative because of ridge shape)
+        rho = abs(result.correlation_matrix[0, 1])  # μ_max vs Ks
         assert rho > 0.5, f"Expected strong correlation, got rho={rho:.3f}"
 
 
@@ -278,7 +278,7 @@ class TestConvergenceTrace:
         diag = OptimizerDiagnostics(obj, PARAM_NAMES, BOUNDS, verbose=False)
 
         # Start away from optimum
-        start = {"qmax": 5.0, "Ks": 200.0, "Ki": 10000.0}
+        start = {"μ_max": 5.0, "Ks": 200.0, "Ki": 10000.0}
         trace = diag.trace_convergence(start)
 
         assert isinstance(trace, ConvergenceTrace)
@@ -293,7 +293,7 @@ class TestConvergenceTrace:
         obj = make_quadratic_objective([2.5, 100.0, 25000.0], [1.0, 100.0, 10000.0])
         diag = OptimizerDiagnostics(obj, PARAM_NAMES, BOUNDS, verbose=False)
 
-        start = {"qmax": 8.0, "Ks": 400.0, "Ki": 5000.0}
+        start = {"μ_max": 8.0, "Ks": 400.0, "Ki": 5000.0}
         trace = diag.trace_convergence(start)
 
         # Final should be <= initial

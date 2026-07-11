@@ -25,7 +25,7 @@ Numeric = Union[float, np.ndarray]
 
 def single_monod_term(
     substrate: Numeric,
-    qmax: float,
+    μ_max: float,
     Ks: float,
     Ki: float = None
 ) -> Numeric:
@@ -37,20 +37,20 @@ def single_monod_term(
 
     Args:
         substrate: Substrate concentration (mg/L or mM)
-        qmax: Maximum specific uptake rate (substrate units per biomass per time)
+        μ_max: Maximum specific uptake rate (substrate units per biomass per time)
         Ks: Half-saturation constant (same units as substrate)
         Ki: Substrate inhibition constant (same units as substrate).
             If None, no inhibition term is applied.
 
     Returns:
-        Specific uptake rate (same time units as qmax)
+        Specific uptake rate (same time units as μ_max)
 
     Mathematical Form:
-        Without inhibition: q = qmax * S / (Ks + S)
-        With inhibition: q = qmax * S / (Ks + S + (S² / Ki))
+        Without inhibition: μ = μ_max * S / (Ks + S)
+        With inhibition: μ = μ_max * S / (Ks + S + (S² / Ki))
 
     Example:
-        >>> rate = single_monod_term(substrate=500, qmax=2.5, Ks=400, Ki=25000)
+        >>> rate = single_monod_term(substrate=500, μ_max=2.5, Ks=400, Ki=25000)
         >>> print(f"Uptake rate: {rate:.4f}")
     """
     # Ensure substrate is non-negative
@@ -58,11 +58,11 @@ def single_monod_term(
 
     # Apply Haldane model if Ki is specified, otherwise basic Monod
     if Ki is not None and Ki > 0:
-        # Haldane equation: q = qmax * S / (Ks + S + S²/Ki)
-        monod = qmax * substrate / (Ks + substrate + substrate**2 / Ki)
+        # Haldane equation: μ = μ_max * S / (Ks + S + S²/Ki)
+        monod = μ_max * substrate / (Ks + substrate + substrate**2 / Ki)
     else:
-        # Basic Monod term: q = qmax * S / (Ks + S)
-        monod = qmax * substrate / (Ks + substrate)
+        # Basic Monod term: μ = μ_max * S / (Ks + S)
+        monod = μ_max * substrate / (Ks + substrate)
 
     return monod
 
@@ -70,7 +70,7 @@ def single_monod_term(
 def dual_monod_term(
     substrate: Numeric,
     oxygen: Numeric,
-    qmax: float,
+    μ_max: float,
     Ks: float,
     Ki: float,
     K_o2: float
@@ -85,7 +85,7 @@ def dual_monod_term(
     Args:
         substrate: Substrate concentration (mg/L)
         oxygen: Dissolved oxygen concentration (mg/L)
-        qmax: Maximum specific uptake rate
+        μ_max: Maximum specific uptake rate
         Ks: Half-saturation constant for substrate
         Ki: Substrate inhibition constant
         K_o2: Half-saturation constant for oxygen (mg/L)
@@ -94,16 +94,16 @@ def dual_monod_term(
         Specific uptake rate accounting for both substrate and O2 limitation
 
     Mathematical Form:
-        q = single_monod(S) * O2 / (K_o2 + O2)
+        μ = single_monod(S) * O2 / (K_o2 + O2)
 
     Example:
         >>> rate = dual_monod_term(
-        ...     substrate=500, oxygen=6.0, qmax=2.5,
+        ...     substrate=500, oxygen=6.0, μ_max=2.5,
         ...     Ks=400, Ki=25000, K_o2=0.15
         ... )
     """
     # Get single Monod term for substrate
-    substrate_term = single_monod_term(substrate, qmax, Ks, Ki)
+    substrate_term = single_monod_term(substrate, μ_max, Ks, Ki)
 
     # Oxygen limitation term (simple Monod, no inhibition)
     oxygen = np.maximum(oxygen, 0.0)

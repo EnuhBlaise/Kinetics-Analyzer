@@ -138,7 +138,7 @@ def main():
 
         if model_type == "single_monod":
             ode_system = SingleMonodODE(
-                qmax=params["qmax"],
+                μ_max=params["μ_max"],
                 Ks=params["Ks"],
                 Ki=params["Ki"],
                 Y=params["Y"],
@@ -146,7 +146,7 @@ def main():
             )
         elif model_type == "dual_monod":
             ode_system = DualMonodODE(
-                qmax=params["qmax"],
+                μ_max=params["μ_max"],
                 Ks=params["Ks"],
                 Ki=params["Ki"],
                 Y=params["Y"],
@@ -157,7 +157,7 @@ def main():
             )
         else:  # dual_monod_lag
             ode_system = DualMonodLagODE(
-                qmax=params["qmax"],
+                μ_max=params["μ_max"],
                 Ks=params["Ks"],
                 Ki=params["Ki"],
                 Y=params["Y"],

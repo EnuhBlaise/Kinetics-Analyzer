@@ -345,7 +345,7 @@ def figure_b_delta_aic(
 
 # ── Figure C: Parameter Identifiability (CV% Dot Plot) ───────────────
 
-PARAM_ORDER = ["qmax", "Ks", "Ki", "Y", "K_o2", "Y_o2", "b_decay", "lag_time"]
+PARAM_ORDER = ["μ_max", "Ks", "Ki", "Y", "K_o2", "Y_o2", "b_decay", "lag_time"]
 
 
 def figure_c_cv_dotplot(
@@ -762,7 +762,7 @@ def figure_f_total_error_heatmap(
 
 # Parameters in the master CSV and their display labels
 _MASTER_PARAMS = [
-    ('qmax', 'qmax'),
+    ('μ_max', 'μ_max'),
     ('Ks', 'Ks'),
     ('Ki', 'Ki'),
     ('Y', 'Y'),

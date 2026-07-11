@@ -57,13 +57,13 @@ def render_config_panel(model_type: str):
     
     # Determine which parameters to show based on model
     if model_type == "single_monod":
-        param_names = ["qmax", "Ks", "Ki", "Y", "b_decay"]
+        param_names = ["μ_max", "Ks", "Ki", "Y", "b_decay"]
     elif model_type == "single_monod_lag":
-        param_names = ["qmax", "Ks", "Ki", "Y", "b_decay", "lag_time"]
+        param_names = ["μ_max", "Ks", "Ki", "Y", "b_decay", "lag_time"]
     elif model_type == "dual_monod":
-        param_names = ["qmax", "Ks", "Ki", "Y", "b_decay", "K_o2", "Y_o2"]
+        param_names = ["μ_max", "Ks", "Ki", "Y", "b_decay", "K_o2", "Y_o2"]
     else:  # dual_monod_lag
-        param_names = ["qmax", "Ks", "Ki", "Y", "b_decay", "K_o2", "Y_o2", "lag_time"]
+        param_names = ["μ_max", "Ks", "Ki", "Y", "b_decay", "K_o2", "Y_o2", "lag_time"]
     
     # Parameter input tabs
     tab1, tab2 = st.tabs(["📊 Initial Guesses", "📏 Parameter Bounds"])
@@ -132,7 +132,7 @@ def _render_initial_guesses(param_names: list):
     
     # Default values
     defaults = {
-        "qmax": 5.0, "Ks": 100.0, "Ki": 10000.0, "Y": 0.35,
+        "μ_max": 5.0, "Ks": 100.0, "Ki": 10000.0, "Y": 0.35,
         "b_decay": 0.01, "K_o2": 0.15, "Y_o2": 1.0, "lag_time": 0.1
     }
     
@@ -222,13 +222,13 @@ def _build_config_dict() -> dict:
     
     # Filter parameters based on model type
     if model_type == "single_monod":
-        param_names = ["qmax", "Ks", "Ki", "Y", "b_decay"]
+        param_names = ["μ_max", "Ks", "Ki", "Y", "b_decay"]
     elif model_type == "single_monod_lag":
-        param_names = ["qmax", "Ks", "Ki", "Y", "b_decay", "lag_time"]
+        param_names = ["μ_max", "Ks", "Ki", "Y", "b_decay", "lag_time"]
     elif model_type == "dual_monod":
-        param_names = ["qmax", "Ks", "Ki", "Y", "b_decay", "K_o2", "Y_o2"]
+        param_names = ["μ_max", "Ks", "Ki", "Y", "b_decay", "K_o2", "Y_o2"]
     else:
-        param_names = ["qmax", "Ks", "Ki", "Y", "b_decay", "K_o2", "Y_o2", "lag_time"]
+        param_names = ["μ_max", "Ks", "Ki", "Y", "b_decay", "K_o2", "Y_o2", "lag_time"]
     
     initial_guesses = {k: v for k, v in st.session_state.get('initial_guesses', {}).items() if k in param_names}
     bounds = {k: v for k, v in st.session_state.get('bounds', {}).items() if k in param_names}

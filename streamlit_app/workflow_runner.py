@@ -393,7 +393,7 @@ def _build_predictions_df(result, workflow, exp_data) -> pd.DataFrame:
 def _get_parameter_units(substrate_name: str, parameters: dict) -> dict:
     """Get units for each parameter."""
     units = {
-        "qmax": f"mg{substrate_name}/(mgCells·day)",
+        "μ_max": f"mg{substrate_name}/(mgCells·day)",
         "Ks": f"mg{substrate_name}/L",
         "Ki": f"mg{substrate_name}/L",
         "Y": f"mgCells/mg{substrate_name}",

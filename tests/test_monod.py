@@ -18,38 +18,38 @@ class TestSingleMonodTerm:
 
     def test_basic_monod_no_inhibition(self):
         """Test basic Monod without substrate inhibition."""
-        result = single_monod_term(substrate=500, qmax=2.5, Ks=400, Ki=None)
+        result = single_monod_term(substrate=500, μ_max=2.5, Ks=400, Ki=None)
         expected = 2.5 * 500 / (400 + 500)
         assert abs(result - expected) < 1e-10
 
     def test_monod_with_inhibition(self):
         """Test Monod with substrate inhibition (Haldane model)."""
-        result = single_monod_term(substrate=500, qmax=2.5, Ks=400, Ki=25000)
-        # Haldane: q = qmax * S / (Ks + S + S^2/Ki)
+        result = single_monod_term(substrate=500, μ_max=2.5, Ks=400, Ki=25000)
+        # Haldane: q = μ_max * S / (Ks + S + S^2/Ki)
         expected = 2.5 * 500 / (400 + 500 + 500**2 / 25000)
         assert abs(result - expected) < 1e-10
 
     def test_zero_substrate(self):
         """Test with zero substrate concentration."""
-        result = single_monod_term(substrate=0, qmax=2.5, Ks=400, Ki=25000)
+        result = single_monod_term(substrate=0, μ_max=2.5, Ks=400, Ki=25000)
         assert result == 0.0
 
     def test_negative_substrate_clipped(self):
         """Test that negative substrate is clipped to zero."""
-        result = single_monod_term(substrate=-10, qmax=2.5, Ks=400, Ki=25000)
+        result = single_monod_term(substrate=-10, μ_max=2.5, Ks=400, Ki=25000)
         assert result == 0.0
 
     def test_high_inhibition(self):
         """Test high substrate causing strong inhibition."""
-        result = single_monod_term(substrate=20000, qmax=2.5, Ks=400, Ki=25000)
+        result = single_monod_term(substrate=20000, μ_max=2.5, Ks=400, Ki=25000)
         # Inhibition factor should be 1 - 20000/25000 = 0.2
         assert result > 0
-        assert result < 2.5  # Less than qmax due to inhibition
+        assert result < 2.5  # Less than μ_max due to inhibition
 
     def test_array_input(self):
         """Test with numpy array input."""
         substrates = np.array([100, 500, 1000])
-        result = single_monod_term(substrates, qmax=2.5, Ks=400, Ki=25000)
+        result = single_monod_term(substrates, μ_max=2.5, Ks=400, Ki=25000)
         assert len(result) == 3
         assert all(result >= 0)
 
@@ -61,7 +61,7 @@ class TestDualMonodTerm:
         """Test dual Monod with substrate and oxygen."""
         result = dual_monod_term(
             substrate=500, oxygen=6.0,
-            qmax=2.5, Ks=400, Ki=25000, K_o2=0.15
+            μ_max=2.5, Ks=400, Ki=25000, K_o2=0.15
         )
         assert result > 0
         assert result < 2.5
@@ -70,7 +70,7 @@ class TestDualMonodTerm:
         """Test with zero oxygen - should be zero."""
         result = dual_monod_term(
             substrate=500, oxygen=0,
-            qmax=2.5, Ks=400, Ki=25000, K_o2=0.15
+            μ_max=2.5, Ks=400, Ki=25000, K_o2=0.15
         )
         assert result == 0.0
 
@@ -78,11 +78,11 @@ class TestDualMonodTerm:
         """Test with saturating oxygen."""
         result_high = dual_monod_term(
             substrate=500, oxygen=100,
-            qmax=2.5, Ks=400, Ki=25000, K_o2=0.15
+            μ_max=2.5, Ks=400, Ki=25000, K_o2=0.15
         )
         result_low = dual_monod_term(
             substrate=500, oxygen=1.0,
-            qmax=2.5, Ks=400, Ki=25000, K_o2=0.15
+            μ_max=2.5, Ks=400, Ki=25000, K_o2=0.15
         )
         assert result_high > result_low  # Higher O2 = higher rate
 

@@ -496,8 +496,8 @@ class OptimizerDiagnostics:
         if param_pairs is None:
             # Default problematic pairs in Monod kinetics
             all_pairs = [
-                ("qmax", "Ks"), ("qmax", "b_decay"), ("Ks", "Ki"),
-                ("qmax", "Ki"), ("Y", "b_decay"),
+                ("μ_max", "Ks"), ("μ_max", "b_decay"), ("Ks", "Ki"),
+                ("μ_max", "Ki"), ("Y", "b_decay"),
             ]
             # Filter to only those that exist in this model
             param_pairs = [
@@ -506,9 +506,9 @@ class OptimizerDiagnostics:
             ]
             # Add oxygen pairs if present
             if "K_o2" in self.parameter_names:
-                param_pairs.append(("qmax", "K_o2"))
+                param_pairs.append(("μ_max", "K_o2"))
             if "lag_time" in self.parameter_names:
-                param_pairs.append(("qmax", "lag_time"))
+                param_pairs.append(("μ_max", "lag_time"))
                 param_pairs.append(("b_decay", "lag_time"))
 
         if self.verbose:

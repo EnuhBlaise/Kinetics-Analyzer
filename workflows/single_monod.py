@@ -5,10 +5,10 @@ This workflow implements the simplest kinetic model with only
 substrate limitation and biomass growth, without oxygen dynamics.
 
 Model equations:
-    dS/dt = -(1/Y) * q * X
-    dX/dt = (q - b_decay) * X
+    dS/dt = -(1/Y) * μ * X
+    dX/dt = (μ - b_decay) * X
 
-where q = qmax * S/(Ks + S) * (1 - S/Ki)
+where μ = μ_max * S/(Ks + S) * (1 - S/Ki)
 
 Use case:
 - Anaerobic systems
@@ -32,7 +32,7 @@ class SingleMonodWorkflow(BaseWorkflow):
     is not limiting or for anaerobic cultures.
 
     Parameters optimized:
-        - qmax: Maximum specific uptake rate
+        - μ_max: Maximum specific uptake rate
         - Ks: Half-saturation constant
         - Ki: Substrate inhibition constant
         - Y: Yield coefficient
@@ -45,20 +45,20 @@ class SingleMonodWorkflow(BaseWorkflow):
 
     @property
     def parameter_names(self) -> List[str]:
-        return ["qmax", "Ks", "Ki", "Y", "b_decay"]
+        return ["μ_max", "Ks", "Ki", "Y", "b_decay"]
 
     def create_ode_system(self, parameters: Dict[str, float]) -> SingleMonodODE:
         """
         Create a SingleMonodODE system with given parameters.
 
         Args:
-            parameters: Dictionary containing qmax, Ks, Ki, Y, b_decay
+            parameters: Dictionary containing μ_max, Ks, Ki, Y, b_decay
 
         Returns:
             Configured SingleMonodODE instance
         """
         return SingleMonodODE(
-            qmax=parameters["qmax"],
+            μ_max=parameters["μ_max"],
             Ks=parameters["Ks"],
             Ki=parameters["Ki"],
             Y=parameters["Y"],

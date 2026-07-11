@@ -100,8 +100,8 @@ def oxygen_utilization_rate(
         Volumetric oxygen utilization rate (mg O2/L/time)
 
     Mathematical Form:
-        r_O2 = Y_O2 * q * X
-        where q is the specific uptake rate and X is biomass
+        r_O2 = Y_O2 * μ * X
+        where μ is the specific uptake rate and X is biomass
     """
     return Y_o2 * monod_term * biomass
 

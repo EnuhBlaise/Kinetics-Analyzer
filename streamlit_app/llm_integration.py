@@ -270,20 +270,20 @@ Format your response with clear markdown sections. Be verbose and thorough - the
         # Model descriptions
         model_info = {
             'single_monod': """Single Monod Model with Substrate Inhibition
-dS/dt = -qmax * (S / (Ks + S)) * (Ki / (Ki + S)) * X
-dX/dt = Y * qmax * (S / (Ks + S)) * (Ki / (Ki + S)) * X - b_decay * X
-Parameters: qmax (max specific uptake), Ks (half-saturation), Ki (inhibition constant), Y (yield), b_decay (decay rate)""",
+dS/dt = -μ_max * (S / (Ks + S)) * (Ki / (Ki + S)) * X
+dX/dt = Y * μ_max * (S / (Ks + S)) * (Ki / (Ki + S)) * X - b_decay * X
+Parameters: μ_max (max specific uptake), Ks (half-saturation), Ki (inhibition constant), Y (yield), b_decay (decay rate)""",
             
             'dual_monod': """Dual Monod Model (Substrate + Oxygen Limitation)
-dS/dt = -qmax * (S / (Ks + S)) * (Ki / (Ki + S)) * (O2 / (K_o2 + O2)) * X
-dX/dt = Y * qmax * (S / (Ks + S)) * (Ki / (Ki + S)) * (O2 / (K_o2 + O2)) * X - b_decay * X
-dO2/dt = kLa * (O2_sat - O2) - Y_o2 * qmax * (...) * X
-Parameters: qmax, Ks, Ki, Y, b_decay, K_o2 (oxygen half-sat), Y_o2 (oxygen yield)""",
+dS/dt = -μ_max * (S / (Ks + S)) * (Ki / (Ki + S)) * (O2 / (K_o2 + O2)) * X
+dX/dt = Y * μ_max * (S / (Ks + S)) * (Ki / (Ki + S)) * (O2 / (K_o2 + O2)) * X - b_decay * X
+dO2/dt = kLa * (O2_sat - O2) - Y_o2 * μ_max * (...) * X
+Parameters: μ_max, Ks, Ki, Y, b_decay, K_o2 (oxygen half-sat), Y_o2 (oxygen yield)""",
             
             'dual_monod_lag': """Dual Monod Model with Lag Phase
 Same as Dual Monod, but with a lag function: growth_factor = 1 - exp(-t / lag_time)
 This accounts for microbial adaptation before exponential growth begins.
-Parameters: qmax, Ks, Ki, Y, b_decay, K_o2, Y_o2, lag_time"""
+Parameters: μ_max, Ks, Ki, Y, b_decay, K_o2, Y_o2, lag_time"""
         }
         
         # Statistics formatting

@@ -18,7 +18,7 @@ RESULTS_DIR = PROJECT_ROOT / "results"
 
 # Default parameter bounds
 DEFAULT_BOUNDS = {
-    "qmax": [0.1, 50.0],
+    "μ_max": [0.1, 50.0],
     "Ks": [1.0, 2000.0],
     "Ki": [100.0, 50000.0],
     "Y": [0.05, 1.0],
@@ -57,8 +57,8 @@ HF_API_TOKEN = os.getenv("HF_API_TOKEN", "")
 
 # Parameter descriptions for UI
 PARAMETER_INFO = {
-    "qmax": {
-        "name": "Maximum Uptake Rate (qmax)",
+    "μ_max": {
+        "name": "Maximum Uptake Rate (μ_max)",
         "unit": "mg substrate/(mg cells·day)",
         "description": "Maximum specific substrate uptake rate",
         "typical_range": "1-50"

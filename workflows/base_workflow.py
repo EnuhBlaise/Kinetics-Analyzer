@@ -632,7 +632,7 @@ class BaseWorkflow(ABC):
         """Save all results to disk."""
         # Parameter units
         units = {
-            "qmax": f"mg{self.config.name}/(mgCells·day)",
+            "μ_max": f"mg{self.config.name}/(mgCells·day)",
             "Ks": f"mg{self.config.name}/L",
             "Ki": f"mg{self.config.name}/L",
             "Y": f"mgCells/mg{self.config.name}",

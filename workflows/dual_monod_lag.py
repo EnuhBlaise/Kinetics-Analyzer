@@ -6,12 +6,12 @@ oxygen dynamics, reaeration, and a lag phase to account for
 microbial adaptation before exponential growth.
 
 Model equations:
-    dS/dt = -(1/Y) * q * X * lag_factor
-    dX/dt = q * lag_factor * X - b_decay * X
+    dS/dt = -(1/Y) * μ * X * lag_factor
+    dX/dt = μ * lag_factor * X - b_decay * X
     dO2/dt = -r_O2 * lag_factor + reaeration
 
 where:
-    q = qmax * S/(Ks+S) * (1-S/Ki) * O2/(K_o2+O2)
+    μ = μ_max * S/(Ks+S) * (1-S/Ki) * O2/(K_o2+O2)
     lag_factor = 1 / (1 + exp(-k * (t - lag_time/2) / lag_time))
 
 Use case:
@@ -42,7 +42,7 @@ class DualMonodLagWorkflow(BaseWorkflow):
     - Lag phase for microbial adaptation
 
     Parameters optimized:
-        - qmax: Maximum specific uptake rate
+        - μ_max: Maximum specific uptake rate
         - Ks: Half-saturation constant for substrate
         - Ki: Substrate inhibition constant
         - Y: Yield coefficient (biomass/substrate)
@@ -58,7 +58,7 @@ class DualMonodLagWorkflow(BaseWorkflow):
 
     @property
     def parameter_names(self) -> List[str]:
-        return ["qmax", "Ks", "Ki", "Y", "b_decay", "K_o2", "Y_o2", "lag_time"]
+        return ["μ_max", "Ks", "Ki", "Y", "b_decay", "K_o2", "Y_o2", "lag_time"]
 
     def create_ode_system(self, parameters: Dict[str, float]) -> DualMonodLagODE:
         """
@@ -71,7 +71,7 @@ class DualMonodLagWorkflow(BaseWorkflow):
             Configured DualMonodLagODE instance
         """
         return DualMonodLagODE(
-            qmax=parameters["qmax"],
+            μ_max=parameters["μ_max"],
             Ks=parameters["Ks"],
             Ki=parameters["Ki"],
             Y=parameters["Y"],

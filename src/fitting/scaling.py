@@ -18,7 +18,7 @@ Three independent concerns are addressed:
 
 3. **adaptive_mcmc_proposal** — shapes Metropolis random-walk proposals
    using the Hessian covariance matrix when available, dramatically
-   improving mixing for correlated parameters (qmax↔Ks, Y↔b_decay).
+   improving mixing for correlated parameters (μ_max↔Ks, Y↔b_decay).
 """
 
 from __future__ import annotations

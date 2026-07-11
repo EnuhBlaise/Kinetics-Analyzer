@@ -9,8 +9,8 @@ This module provides a unified interface that combines:
 The scientist's interface:
     fitter = RobustFitter(model_type="dual_monod_lag")
     result = fitter.fit(conditions, config)
-    print(f"qmax = {result.parameters['qmax']:.3f} "
-          f"95% CI: {result.confidence_intervals['qmax']}")
+    print(f"μ_max = {result.parameters['μ_max']:.3f} "
+          f"95% CI: {result.confidence_intervals['μ_max']}")
 """
 
 from typing import Dict, List, Optional, Any, Tuple
@@ -52,13 +52,13 @@ class PicklablePredictor:
         # Create model
         if self.model_type == "single_monod":
             model = SingleMonodODE(
-                qmax=params['qmax'], Ks=params['Ks'], Ki=params['Ki'],
+                μ_max=params['μ_max'], Ks=params['Ks'], Ki=params['Ki'],
                 Y=params['Y'], b_decay=params['b_decay']
             )
             y0 = np.array([S0, X0])
         elif self.model_type == "dual_monod":
             model = DualMonodODE(
-                qmax=params['qmax'], Ks=params['Ks'], Ki=params['Ki'],
+                μ_max=params['μ_max'], Ks=params['Ks'], Ki=params['Ki'],
                 Y=params['Y'], b_decay=params['b_decay'],
                 K_o2=params['K_o2'], Y_o2=params['Y_o2'],
                 oxygen_model=self.oxygen_model
@@ -66,7 +66,7 @@ class PicklablePredictor:
             y0 = np.array([S0, X0, O0])
         elif self.model_type == "dual_monod_lag":
             model = DualMonodLagODE(
-                qmax=params['qmax'], Ks=params['Ks'], Ki=params['Ki'],
+                μ_max=params['μ_max'], Ks=params['Ks'], Ki=params['Ki'],
                 Y=params['Y'], b_decay=params['b_decay'],
                 K_o2=params['K_o2'], Y_o2=params['Y_o2'],
                 lag_time=params['lag_time'],
@@ -252,7 +252,7 @@ class RobustFitter:
 
     def _get_param_names(self) -> List[str]:
         """Get parameter names for the model type."""
-        base_params = ["qmax", "Ks", "Ki", "Y", "b_decay"]
+        base_params = ["μ_max", "Ks", "Ki", "Y", "b_decay"]
 
         if self.model_type == "single_monod":
             return base_params
@@ -389,7 +389,7 @@ class RobustFitter:
         else:
             # Defaults
             return {
-                'qmax': 2.0, 'Ks': 500.0, 'Ki': 25000.0,
+                'μ_max': 2.0, 'Ks': 500.0, 'Ki': 25000.0,
                 'Y': 0.35, 'b_decay': 0.01, 'K_o2': 0.15,
                 'Y_o2': 0.8, 'lag_time': 1.0
             }
@@ -403,7 +403,7 @@ class RobustFitter:
         else:
             # Defaults
             return {
-                'qmax': (0.1, 10.0), 'Ks': (10.0, 5000.0),
+                'μ_max': (0.1, 10.0), 'Ks': (10.0, 5000.0),
                 'Ki': (100.0, 100000.0), 'Y': (0.05, 1.0),
                 'b_decay': (0.001, 0.5), 'K_o2': (0.01, 2.0),
                 'Y_o2': (0.1, 3.0), 'lag_time': (0.0, 20.0)
@@ -549,19 +549,19 @@ class RobustFitter:
         """Create ODE system from parameters."""
         if self.model_type == "single_monod":
             return SingleMonodODE(
-                qmax=params['qmax'], Ks=params['Ks'], Ki=params['Ki'],
+                μ_max=params['μ_max'], Ks=params['Ks'], Ki=params['Ki'],
                 Y=params['Y'], b_decay=params['b_decay']
             )
         elif self.model_type == "dual_monod":
             return DualMonodODE(
-                qmax=params['qmax'], Ks=params['Ks'], Ki=params['Ki'],
+                μ_max=params['μ_max'], Ks=params['Ks'], Ki=params['Ki'],
                 Y=params['Y'], b_decay=params['b_decay'],
                 K_o2=params['K_o2'], Y_o2=params['Y_o2'],
                 oxygen_model=oxygen_model
             )
         elif self.model_type == "dual_monod_lag":
             return DualMonodLagODE(
-                qmax=params['qmax'], Ks=params['Ks'], Ki=params['Ki'],
+                μ_max=params['μ_max'], Ks=params['Ks'], Ki=params['Ki'],
                 Y=params['Y'], b_decay=params['b_decay'],
                 K_o2=params['K_o2'], Y_o2=params['Y_o2'],
                 lag_time=params['lag_time'],
@@ -698,19 +698,19 @@ class WeightedGlobalObjective:
         """Create ODE system from parameters."""
         if self.model_type == "single_monod":
             return SingleMonodODE(
-                qmax=params['qmax'], Ks=params['Ks'], Ki=params['Ki'],
+                μ_max=params['μ_max'], Ks=params['Ks'], Ki=params['Ki'],
                 Y=params['Y'], b_decay=params['b_decay']
             )
         elif self.model_type == "dual_monod":
             return DualMonodODE(
-                qmax=params['qmax'], Ks=params['Ks'], Ki=params['Ki'],
+                μ_max=params['μ_max'], Ks=params['Ks'], Ki=params['Ki'],
                 Y=params['Y'], b_decay=params['b_decay'],
                 K_o2=params['K_o2'], Y_o2=params['Y_o2'],
                 oxygen_model=self.oxygen_model
             )
         elif self.model_type == "dual_monod_lag":
             return DualMonodLagODE(
-                qmax=params['qmax'], Ks=params['Ks'], Ki=params['Ki'],
+                μ_max=params['μ_max'], Ks=params['Ks'], Ki=params['Ki'],
                 Y=params['Y'], b_decay=params['b_decay'],
                 K_o2=params['K_o2'], Y_o2=params['Y_o2'],
                 lag_time=params['lag_time'],

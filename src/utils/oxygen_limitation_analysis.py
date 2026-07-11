@@ -14,7 +14,7 @@ Key diagnostic quantities per (substrate, model):
   2. O2 saturation factor at O2_max — how saturated the rate is at full
      aeration (8.0 mg/L by default).
   3. Effective O2 swing ratio — sat@max / sat@min.
-  4. O2 demand intensity — Y_O2 x qmax.
+  4. O2 demand intensity — Y_O2 x μ_max.
 
 Produces a 3-row figure:
   Row 1 — Small-multiple O2 Monod saturation curves (one subplot per
@@ -137,7 +137,7 @@ def analyse(csv_path: str, output_dir: str = "output"):
         return
 
     # Coerce numeric columns
-    for col in ["K_O2", "Y_O2", "qmax", "Total_Error", "R2", "AIC"]:
+    for col in ["K_O2", "Y_O2", "μ_max", "Total_Error", "R2", "AIC"]:
         if col in dual.columns:
             dual[col] = pd.to_numeric(dual[col], errors="coerce")
 
@@ -159,14 +159,14 @@ def analyse(csv_path: str, output_dir: str = "output"):
         sat_min = float(o2_monod(O2_MIN, k))
         sat_max = float(o2_monod(O2_MAX, k))
         swing = sat_max / sat_min if sat_min > 0 else np.inf
-        demand = r["Y_O2"] * r["qmax"]
+        demand = r["Y_O2"] * r["μ_max"]
 
         rows.append({
             "Substrate":     sub,
             "Model":         mod,
             "K_O2":          k,
             "Y_O2":          r["Y_O2"],
-            "qmax":          r["qmax"],
+            "μ_max":          r["μ_max"],
             "sat_at_O2min":  sat_min,
             "sat_at_O2max":  sat_max,
             "swing":         swing,
@@ -303,7 +303,7 @@ def analyse(csv_path: str, output_dir: str = "output"):
     panel_dem_letter = chr(panel_letter + n_sub + 1)
     ax_dem = fig.add_subplot(inner_bars[0, 1])
     ax_dem.set_title(
-        f"{panel_dem_letter}.  O2 Demand Intensity  (Y_O2 x qmax)",
+        f"{panel_dem_letter}.  O2 Demand Intensity  (Y_O2 x μ_max)",
         fontweight="bold",
     )
 
@@ -326,7 +326,7 @@ def analyse(csv_path: str, output_dir: str = "output"):
     ax_dem.set_xticks(x_base)
     ax_dem.set_xticklabels([_display(s) for s in substrates],
                            rotation=30, ha="right")
-    ax_dem.set_ylabel("Y_O2 x qmax  (mg O2 / mg cells / day)")
+    ax_dem.set_ylabel("Y_O2 x μ_max  (mg O2 / mg cells / day)")
     ax_dem.legend(fontsize=8, loc="upper right", ncol=1, framealpha=0.9)
     ax_dem.grid(axis="y", alpha=0.20)
 
@@ -340,7 +340,7 @@ def analyse(csv_path: str, output_dir: str = "output"):
     ax_tbl.axis("off")
 
     col_labels = [
-        "Substrate", "Model", "K_O2", "Y_O2", "qmax",
+        "Substrate", "Model", "K_O2", "Y_O2", "μ_max",
         "Sat@0.1", "Sat@8.0", "Swing", "O2 Demand", "R2", "AIC",
     ]
     table_data = []
@@ -350,7 +350,7 @@ def analyse(csv_path: str, output_dir: str = "output"):
             MODEL_SHORT.get(r["Model"], r["Model"]),
             f"{r['K_O2']:.4f}",
             f"{r['Y_O2']:.4f}",
-            f"{r['qmax']:.2f}",
+            f"{r['μ_max']:.2f}",
             f"{r['sat_at_O2min']:.3f}",
             f"{r['sat_at_O2max']:.4f}",
             f"{r['swing']:.1f}x",
@@ -424,7 +424,7 @@ def analyse(csv_path: str, output_dir: str = "output"):
     print("=" * 100)
     print(
         f"{'Substrate':<24} {'Model':<7} {'K_O2':>8} {'Y_O2':>8} "
-        f"{'qmax':>8} {'Sat@0.1':>8} {'Sat@8.0':>8} {'Swing':>7} "
+        f"{'μ_max':>8} {'Sat@0.1':>8} {'Sat@8.0':>8} {'Swing':>7} "
         f"{'O2 Dem':>8} {'R2':>7} {'AIC':>9}"
     )
     print("-" * 100)
@@ -445,7 +445,7 @@ def analyse(csv_path: str, output_dir: str = "output"):
             f"{MODEL_SHORT.get(r['Model'], '?'):<7} "
             f"{r['K_O2']:8.4f} "
             f"{r['Y_O2']:8.4f} "
-            f"{r['qmax']:8.2f} "
+            f"{r['μ_max']:8.2f} "
             f"{r['sat_at_O2min']:8.3f} "
             f"{r['sat_at_O2max']:8.4f} "
             f"{r['swing']:6.1f}x "
@@ -456,7 +456,7 @@ def analyse(csv_path: str, output_dir: str = "output"):
     print("-" * 100)
     print("Sat@0.1 = O2/(K_O2+O2) evaluated at O2 = 0.1 mg/L")
     print("Swing   = Sat@8.0 / Sat@0.1")
-    print("O2 Dem  = Y_O2 * qmax  (oxygen consumption intensity)")
+    print("O2 Dem  = Y_O2 * μ_max  (oxygen consumption intensity)")
     print("**  = heavily O2-limited (Sat@0.1 < 0.30)")
     print("<-- best = lowest AIC among dual variants for that substrate")
 

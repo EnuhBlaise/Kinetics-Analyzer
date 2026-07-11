@@ -5,11 +5,11 @@ This workflow implements a model with substrate limitation, biomass growth,
 and a lag phase to account for microbial adaptation, without oxygen dynamics.
 
 Model equations:
-    dS/dt = -(1/Y) * q * X * lag_factor
-    dX/dt = q * lag_factor * X - b_decay * X
+    dS/dt = -(1/Y) * μ * X * lag_factor
+    dX/dt = μ * lag_factor * X - b_decay * X
 
 where:
-    q = qmax * S/(Ks+S) * (1-S/Ki)
+    μ = μ_max * S/(Ks+S) * (1-S/Ki)
     lag_factor = 1 / (1 + exp(-k * (t - lag_time/2) / lag_time))
 
 Use case:
@@ -40,7 +40,7 @@ class SingleMonodLagWorkflow(BaseWorkflow):
     - No oxygen dynamics (2-state system)
 
     Parameters optimized:
-        - qmax: Maximum specific uptake rate
+        - μ_max: Maximum specific uptake rate
         - Ks: Half-saturation constant
         - Ki: Substrate inhibition constant
         - Y: Yield coefficient
@@ -54,20 +54,20 @@ class SingleMonodLagWorkflow(BaseWorkflow):
 
     @property
     def parameter_names(self) -> List[str]:
-        return ["qmax", "Ks", "Ki", "Y", "b_decay", "lag_time"]
+        return ["μ_max", "Ks", "Ki", "Y", "b_decay", "lag_time"]
 
     def create_ode_system(self, parameters: Dict[str, float]) -> SingleMonodLagODE:
         """
         Create a SingleMonodLagODE system with given parameters.
 
         Args:
-            parameters: Dictionary containing qmax, Ks, Ki, Y, b_decay, lag_time
+            parameters: Dictionary containing μ_max, Ks, Ki, Y, b_decay, lag_time
 
         Returns:
             Configured SingleMonodLagODE instance
         """
         return SingleMonodLagODE(
-            qmax=parameters["qmax"],
+            μ_max=parameters["μ_max"],
             Ks=parameters["Ks"],
             Ki=parameters["Ki"],
             Y=parameters["Y"],

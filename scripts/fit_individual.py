@@ -69,7 +69,7 @@ Examples:
         -d data/example/Experimental_data_xylose.csv -m dual_monod_lag -v
 
 Available models:
-  single_monod       - Single Monod: basic Monod (4 params: qmax, Ks, Y, b_decay)
+  single_monod       - Single Monod: basic Monod (4 params: μ_max, Ks, Y, b_decay)
   single_haldane     - Single Monod (Haldane): + substrate inhibition (5 params: + Ki)
   single_monod_lag   - Single Monod + Lag: + lag phase (5 params: + lag_time)
   single_haldane_lag - Single Monod + Lag (Haldane): + substrate inhibition (6 params: + Ki)

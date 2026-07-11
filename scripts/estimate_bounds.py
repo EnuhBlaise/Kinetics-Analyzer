@@ -155,7 +155,7 @@ def main():
         header = (
             f"  {'Substrate':20s}  {'Formula':12s}  {'γ_s':>6s}  "
             f"{'Y_max':>8s}  {'Y_prac':>8s}  {'ThOD':>8s}  "
-            f"{'Y_o2':>8s}  {'qmax':>6s}  {'Class':>10s}"
+            f"{'Y_o2':>8s}  {'μ_max':>6s}  {'Class':>10s}"
         )
         print(header)
         print(f"  {'─' * 76}")
@@ -168,14 +168,14 @@ def main():
                 f"{report.Y_practical_mg:8.4f}  "
                 f"{report.ThOD_mg_mg:8.4f}  "
                 f"{report.Y_o2_max:8.4f}  "
-                f"{report.qmax_ceiling:6.1f}  "
+                f"{report.μ_max_ceiling:6.1f}  "
                 f"{report.substrate_class:>10s}"
             )
             print(line)
         print(f"{'═' * 80}")
         print()
         print("  Units: Y [mg cells/mg sub], ThOD [mg O₂/mg sub], "
-              "Y_o2 [mg cells/mg O₂], qmax [1/day]")
+              "Y_o2 [mg cells/mg O₂], μ_max [1/day]")
         print(f"  Biomass formula: CH₁.₈O₀.₅N₀.₂  "
               f"(γ_bio = 4.2, MW = 24.6 g/C-mol)")
         print(f"  Practical ceiling assumes "

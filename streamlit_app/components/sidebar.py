@@ -28,9 +28,9 @@ def render_sidebar():
 
         # Model description
         model_descriptions = {
-            "Single Monod": "📝 **4 parameters**: qmax, Ks, Y, b_decay\n\nBasic Monod without substrate inhibition",
-            "Single Monod (Haldane)": "📝 **5 parameters**: qmax, Ks, Ki, Y, b_decay\n\nHaldane model with substrate inhibition",
-            "Single Monod + Lag": "📝 **5 parameters**: qmax, Ks, Y, b_decay, lag_time\n\nBasic Monod with lag phase, no oxygen",
+            "Single Monod": "📝 **4 parameters**: μ_max, Ks, Y, b_decay\n\nBasic Monod without substrate inhibition",
+            "Single Monod (Haldane)": "📝 **5 parameters**: μ_max, Ks, Ki, Y, b_decay\n\nHaldane model with substrate inhibition",
+            "Single Monod + Lag": "📝 **5 parameters**: μ_max, Ks, Y, b_decay, lag_time\n\nBasic Monod with lag phase, no oxygen",
             "Single Monod + Lag (Haldane)": "📝 **6 parameters**: + Ki\n\nHaldane with lag phase, no oxygen",
             "Dual Monod": "📝 **6 parameters**: + K_O2, Y_O2\n\nAerobic systems with oxygen dynamics",
             "Dual Monod (Haldane)": "📝 **7 parameters**: + Ki\n\nOxygen dynamics with substrate inhibition",

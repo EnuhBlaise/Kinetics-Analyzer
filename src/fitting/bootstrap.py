@@ -350,7 +350,7 @@ def run_bootstrap(
     Example:
         >>> def my_fitter(conditions):
         >>>     # Your fitting logic
-        >>>     return {'qmax': 2.5, 'Ks': 400, ...}
+        >>>     return {'μ_max': 2.5, 'Ks': 400, ...}
         >>>
         >>> def my_predictor(condition, params):
         >>>     # Your prediction logic

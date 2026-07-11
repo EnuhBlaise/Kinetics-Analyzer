@@ -17,7 +17,7 @@ class TestSingleMonodODE:
     def ode_system(self):
         """Create a standard single Monod ODE system."""
         return SingleMonodODE(
-            qmax=2.5,
+            μ_max=2.5,
             Ks=400,
             Ki=25000,
             Y=0.35,
@@ -34,14 +34,14 @@ class TestSingleMonodODE:
 
     def test_parameter_names(self, ode_system):
         """Test parameter names."""
-        assert "qmax" in ode_system.parameter_names
+        assert "μ_max" in ode_system.parameter_names
         assert "Ks" in ode_system.parameter_names
         assert "Y" in ode_system.parameter_names
 
     def test_get_parameters(self, ode_system):
         """Test parameter retrieval."""
         params = ode_system.get_parameters()
-        assert params["qmax"] == 2.5
+        assert params["μ_max"] == 2.5
         assert params["Ks"] == 400
         assert params["Y"] == 0.35
 
@@ -61,7 +61,7 @@ class TestDualMonodODE:
     def ode_system(self):
         """Create a dual Monod ODE system."""
         return DualMonodODE(
-            qmax=2.5,
+            μ_max=2.5,
             Ks=400,
             Ki=25000,
             Y=0.35,
@@ -93,7 +93,7 @@ class TestDualMonodLagODE:
     def ode_system(self):
         """Create a dual Monod with lag ODE system."""
         return DualMonodLagODE(
-            qmax=2.5,
+            μ_max=2.5,
             Ks=400,
             Ki=25000,
             Y=0.35,
@@ -128,7 +128,7 @@ class TestSolveODE:
 
     def test_solve_single_monod(self):
         """Test solving single Monod ODE."""
-        ode = SingleMonodODE(qmax=2.5, Ks=400, Ki=25000, Y=0.35, b_decay=0.01)
+        ode = SingleMonodODE(μ_max=2.5, Ks=400, Ki=25000, Y=0.35, b_decay=0.01)
         result = solve_ode(
             ode_system=ode,
             initial_conditions=[500.0, 1.0],
@@ -143,7 +143,7 @@ class TestSolveODE:
 
     def test_substrate_decreases(self):
         """Test that substrate decreases over time."""
-        ode = SingleMonodODE(qmax=2.5, Ks=400, Ki=25000, Y=0.35, b_decay=0.01)
+        ode = SingleMonodODE(μ_max=2.5, Ks=400, Ki=25000, Y=0.35, b_decay=0.01)
         result = solve_ode(
             ode_system=ode,
             initial_conditions=[500.0, 1.0],
@@ -156,7 +156,7 @@ class TestSolveODE:
 
     def test_biomass_increases(self):
         """Test that biomass increases over time."""
-        ode = SingleMonodODE(qmax=2.5, Ks=400, Ki=25000, Y=0.35, b_decay=0.01)
+        ode = SingleMonodODE(μ_max=2.5, Ks=400, Ki=25000, Y=0.35, b_decay=0.01)
         result = solve_ode(
             ode_system=ode,
             initial_conditions=[500.0, 1.0],
@@ -169,7 +169,7 @@ class TestSolveODE:
 
     def test_to_dataframe(self):
         """Test conversion to DataFrame."""
-        ode = SingleMonodODE(qmax=2.5, Ks=400, Ki=25000, Y=0.35, b_decay=0.01)
+        ode = SingleMonodODE(μ_max=2.5, Ks=400, Ki=25000, Y=0.35, b_decay=0.01)
         result = solve_ode(
             ode_system=ode,
             initial_conditions=[500.0, 1.0],

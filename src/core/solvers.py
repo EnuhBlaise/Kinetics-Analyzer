@@ -101,7 +101,7 @@ def solve_ode(
 
     Example:
         >>> from src.core.ode_systems import SingleMonodODE
-        >>> ode = SingleMonodODE(qmax=2.5, Ks=400, Ki=25000, Y=0.35, b_decay=0.01)
+        >>> ode = SingleMonodODE(μ_max=2.5, Ks=400, Ki=25000, Y=0.35, b_decay=0.01)
         >>> result = solve_ode(
         ...     ode_system=ode,
         ...     initial_conditions=[750.0, 1.0],  # [S0, X0]

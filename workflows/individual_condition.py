@@ -326,22 +326,22 @@ class IndividualConditionWorkflow:
     # Model configurations
     MODEL_CONFIGS = {
         'single_monod': {
-            'parameters': ['qmax', 'Ks', 'Ki', 'Y', 'b_decay'],
+            'parameters': ['μ_max', 'Ks', 'Ki', 'Y', 'b_decay'],
             'ode_class': SingleMonodODE,
             'n_states': 2,  # S, X
         },
         'single_monod_lag': {
-            'parameters': ['qmax', 'Ks', 'Ki', 'Y', 'b_decay', 'lag_time'],
+            'parameters': ['μ_max', 'Ks', 'Ki', 'Y', 'b_decay', 'lag_time'],
             'ode_class': SingleMonodLagODE,
             'n_states': 2,  # S, X
         },
         'dual_monod': {
-            'parameters': ['qmax', 'Ks', 'Ki', 'Y', 'b_decay', 'K_o2', 'Y_o2'],
+            'parameters': ['μ_max', 'Ks', 'Ki', 'Y', 'b_decay', 'K_o2', 'Y_o2'],
             'ode_class': DualMonodODE,
             'n_states': 3,  # S, X, O2
         },
         'dual_monod_lag': {
-            'parameters': ['qmax', 'Ks', 'Ki', 'Y', 'b_decay', 'K_o2', 'Y_o2', 'lag_time'],
+            'parameters': ['μ_max', 'Ks', 'Ki', 'Y', 'b_decay', 'K_o2', 'Y_o2', 'lag_time'],
             'ode_class': DualMonodLagODE,
             'n_states': 3,  # S, X, O2
         }
@@ -483,7 +483,7 @@ class IndividualConditionWorkflow:
 
         if self.model_type == 'single_monod':
             return ode_class(
-                qmax=parameters['qmax'],
+                μ_max=parameters['μ_max'],
                 Ks=parameters['Ks'],
                 Ki=ki_value,
                 Y=parameters['Y'],
@@ -491,7 +491,7 @@ class IndividualConditionWorkflow:
             )
         elif self.model_type == 'single_monod_lag':
             return ode_class(
-                qmax=parameters['qmax'],
+                μ_max=parameters['μ_max'],
                 Ks=parameters['Ks'],
                 Ki=ki_value,
                 Y=parameters['Y'],
@@ -500,7 +500,7 @@ class IndividualConditionWorkflow:
             )
         elif self.model_type == 'dual_monod':
             return ode_class(
-                qmax=parameters['qmax'],
+                μ_max=parameters['μ_max'],
                 Ks=parameters['Ks'],
                 Ki=ki_value,
                 Y=parameters['Y'],
@@ -511,7 +511,7 @@ class IndividualConditionWorkflow:
             )
         else:  # dual_monod_lag
             return ode_class(
-                qmax=parameters['qmax'],
+                μ_max=parameters['μ_max'],
                 Ks=parameters['Ks'],
                 Ki=ki_value,
                 Y=parameters['Y'],

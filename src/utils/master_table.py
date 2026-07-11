@@ -22,20 +22,20 @@ from src.fitting.statistics import calculate_separate_statistics
 
 # All possible parameter columns in canonical order
 PARAMETER_COLUMNS = [
-    'qmax', 'Ks', 'Ki', 'Y', 'K_O2', 'Y_O2', 'b_decay', 'lag_time',
+    'μ_max', 'Ks', 'Ki', 'Y', 'K_O2', 'Y_O2', 'b_decay', 'lag_time',
 ]
 
 # Parameters used by each model type
 MODEL_PARAMETERS = {
-    'single_monod': ['qmax', 'Ks', 'Ki', 'Y', 'b_decay'],
-    'single_monod_lag': ['qmax', 'Ks', 'Ki', 'Y', 'b_decay', 'lag_time'],
-    'dual_monod': ['qmax', 'Ks', 'Ki', 'Y', 'b_decay', 'K_o2', 'Y_o2'],
-    'dual_monod_lag': ['qmax', 'Ks', 'Ki', 'Y', 'b_decay', 'K_o2', 'Y_o2', 'lag_time'],
+    'single_monod': ['μ_max', 'Ks', 'Ki', 'Y', 'b_decay'],
+    'single_monod_lag': ['μ_max', 'Ks', 'Ki', 'Y', 'b_decay', 'lag_time'],
+    'dual_monod': ['μ_max', 'Ks', 'Ki', 'Y', 'b_decay', 'K_o2', 'Y_o2'],
+    'dual_monod_lag': ['μ_max', 'Ks', 'Ki', 'Y', 'b_decay', 'K_o2', 'Y_o2', 'lag_time'],
 }
 
 # Mapping from JSON parameter keys to master table column names
 _PARAM_TO_COLUMN = {
-    'qmax': 'qmax',
+    'μ_max': 'μ_max',
     'Ks': 'Ks',
     'Ki': 'Ki',
     'Y': 'Y',
@@ -48,7 +48,7 @@ _PARAM_TO_COLUMN = {
 # Full ordered list of master table columns
 MASTER_COLUMNS = [
     'Substrate', 'Model',
-    'qmax', 'qmax_95CI',
+    'μ_max', 'μ_max_95CI',
     'Ks', 'Ks_95CI',
     'Ki', 'Ki_95CI',
     'Y', 'Y_95CI',
@@ -376,7 +376,7 @@ def _create_ode_system(params: dict, model_type: str, oxygen_model: OxygenModel)
 
     if model_type == 'single_monod':
         return SingleMonodODE(
-            qmax=params['qmax'],
+            μ_max=params['μ_max'],
             Ks=params['Ks'],
             Ki=ki_value,
             Y=params['Y'],
@@ -384,7 +384,7 @@ def _create_ode_system(params: dict, model_type: str, oxygen_model: OxygenModel)
         )
     elif model_type == 'single_monod_lag':
         return SingleMonodLagODE(
-            qmax=params['qmax'],
+            μ_max=params['μ_max'],
             Ks=params['Ks'],
             Ki=ki_value,
             Y=params['Y'],
@@ -393,7 +393,7 @@ def _create_ode_system(params: dict, model_type: str, oxygen_model: OxygenModel)
         )
     elif model_type == 'dual_monod':
         return DualMonodODE(
-            qmax=params['qmax'],
+            μ_max=params['μ_max'],
             Ks=params['Ks'],
             Ki=ki_value,
             Y=params['Y'],
@@ -404,7 +404,7 @@ def _create_ode_system(params: dict, model_type: str, oxygen_model: OxygenModel)
         )
     elif model_type == 'dual_monod_lag':
         return DualMonodLagODE(
-            qmax=params['qmax'],
+            μ_max=params['μ_max'],
             Ks=params['Ks'],
             Ki=ki_value,
             Y=params['Y'],

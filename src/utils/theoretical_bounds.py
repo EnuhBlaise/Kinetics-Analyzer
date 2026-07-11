@@ -338,16 +338,16 @@ def yield_oxygen_ceiling(
     }
 
 
-def qmax_heuristic(
+def μ_max_heuristic(
     elements: Dict[str, int],
     molecular_weight: float,
 ) -> Dict[str, float]:
     """
-    Heuristic ceiling for qmax (1/day) based on substrate properties.
+    Heuristic ceiling for μ_max (1/day) based on substrate properties.
 
     Rationale:
-    - Simple sugars (glucose, xylose): qmax typically 5–25 d⁻¹
-    - Phenolic acids / aromatics: qmax typically 1–10 d⁻¹
+    - Simple sugars (glucose, xylose): μ_max typically 5–25 d⁻¹
+    - Phenolic acids / aromatics: μ_max typically 1–10 d⁻¹
     - General heuristic: lighter, more reduced substrates are metabolised
       faster.  We use the degree of reduction and an empirical scaling.
 
@@ -363,7 +363,7 @@ def qmax_heuristic(
     Returns
     -------
     dict
-        ``qmax_ceiling`` – suggested upper bound (1/day)
+        ``μ_max_ceiling`` – suggested upper bound (1/day)
         ``substrate_class`` – "simple_sugar" | "aromatic" | "other"
     """
     n_C = elements.get("C", 0)
@@ -379,16 +379,16 @@ def qmax_heuristic(
     if degree_unsat >= 4 and n_C >= 6:
         substrate_class = "aromatic"
         # Aromatic compounds: slower uptake, more inhibition-prone
-        qmax_ceiling = 10.0
+        μ_max_ceiling = 10.0
     elif gamma_s <= 4.1 and molecular_weight <= 200:
         substrate_class = "simple_sugar"
-        qmax_ceiling = 30.0
+        μ_max_ceiling = 30.0
     else:
         substrate_class = "other"
-        qmax_ceiling = 15.0
+        μ_max_ceiling = 15.0
 
     return {
-        "qmax_ceiling": qmax_ceiling,
+        "μ_max_ceiling": μ_max_ceiling,
         "substrate_class": substrate_class,
         "degree_of_unsaturation": round(degree_unsat, 1),
     }
@@ -426,8 +426,8 @@ class TheoreticalBoundsReport:
     f_carbon: float
     Y_o2_max: float
 
-    # qmax heuristic
-    qmax_ceiling: float
+    # μ_max heuristic
+    μ_max_ceiling: float
     substrate_class: str
     degree_of_unsaturation: float
 
@@ -469,8 +469,8 @@ class TheoreticalBoundsReport:
                 "Y_o2_ceiling": self.Y_o2_max,
                 "unit": "mg_cells / mg_O2",
             },
-            "qmax": {
-                "qmax_ceiling": self.qmax_ceiling,
+            "μ_max": {
+                "μ_max_ceiling": self.μ_max_ceiling,
                 "substrate_class": self.substrate_class,
                 "degree_of_unsaturation": self.degree_of_unsaturation,
                 "unit": "1/day",
@@ -512,10 +512,10 @@ class TheoreticalBoundsReport:
             f"  Carbon to biomass (f): {self.f_carbon:.4f}",
             f"  Y_o2 ceiling   : {self.Y_o2_max:.4f} mg cells / mg O₂",
             f"",
-            f"  ── qmax Heuristic ──────────────────────────────",
+            f"  ── μ_max Heuristic ──────────────────────────────",
             f"  Substrate class: {self.substrate_class}",
             f"  Degree of unsaturation: {self.degree_of_unsaturation}",
-            f"  qmax ceiling   : {self.qmax_ceiling:.1f} 1/day",
+            f"  μ_max ceiling   : {self.μ_max_ceiling:.1f} 1/day",
             f"",
             f"  ── Suggested Parameter Bounds ───────────────────",
         ]
@@ -556,7 +556,7 @@ def compute_bounds_report(
         molecular_weight,
         elements,
     )
-    qmax_info = qmax_heuristic(elements, molecular_weight)
+    μ_max_info = μ_max_heuristic(elements, molecular_weight)
 
     # ── Assemble suggested bounds ──────────────────────────────────
     # These are stoichiometrically-informed defaults; users should
@@ -569,7 +569,7 @@ def compute_bounds_report(
     suggested_bounds = {
         "Y": (0.01, round(Y_upper, 4)),
         "Y_o2": (0.05, round(Y_o2_upper * 1.1, 4)),
-        "qmax": (0.05, round(qmax_info["qmax_ceiling"], 2)),
+        "μ_max": (0.05, round(μ_max_info["μ_max_ceiling"], 2)),
         "b_decay": (0.0001, 0.20),       # literature range
         "Ks": (0.01, 2000.0),             # very substrate-dependent
         "Ki": (1.0, 50000.0),             # very substrate-dependent
@@ -595,9 +595,9 @@ def compute_bounds_report(
         O2_moles_per_mol_sub=thod_info["O2_moles"],
         f_carbon=yo2_info["f_carbon"],
         Y_o2_max=yo2_info["Y_o2_max"],
-        qmax_ceiling=qmax_info["qmax_ceiling"],
-        substrate_class=qmax_info["substrate_class"],
-        degree_of_unsaturation=qmax_info["degree_of_unsaturation"],
+        μ_max_ceiling=μ_max_info["μ_max_ceiling"],
+        substrate_class=μ_max_info["substrate_class"],
+        degree_of_unsaturation=μ_max_info["degree_of_unsaturation"],
         suggested_bounds=suggested_bounds,
     )
 

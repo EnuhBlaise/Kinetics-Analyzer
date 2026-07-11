@@ -53,20 +53,20 @@ MODEL_MAPPING = {
 # Parameter sets for each base model type
 PARAMETER_SETS = {
     'single_monod': {
-        True:  ['qmax', 'Ks', 'Y', 'b_decay'],              # Monod
-        False: ['qmax', 'Ks', 'Ki', 'Y', 'b_decay'],        # Haldane
+        True:  ['μ_max', 'Ks', 'Y', 'b_decay'],              # Monod
+        False: ['μ_max', 'Ks', 'Ki', 'Y', 'b_decay'],        # Haldane
     },
     'single_monod_lag': {
-        True:  ['qmax', 'Ks', 'Y', 'b_decay', 'lag_time'],             # Monod + Lag
-        False: ['qmax', 'Ks', 'Ki', 'Y', 'b_decay', 'lag_time'],       # Haldane + Lag
+        True:  ['μ_max', 'Ks', 'Y', 'b_decay', 'lag_time'],             # Monod + Lag
+        False: ['μ_max', 'Ks', 'Ki', 'Y', 'b_decay', 'lag_time'],       # Haldane + Lag
     },
     'dual_monod': {
-        True:  ['qmax', 'Ks', 'Y', 'b_decay', 'K_o2', 'Y_o2'],
-        False: ['qmax', 'Ks', 'Ki', 'Y', 'b_decay', 'K_o2', 'Y_o2'],
+        True:  ['μ_max', 'Ks', 'Y', 'b_decay', 'K_o2', 'Y_o2'],
+        False: ['μ_max', 'Ks', 'Ki', 'Y', 'b_decay', 'K_o2', 'Y_o2'],
     },
     'dual_monod_lag': {
-        True:  ['qmax', 'Ks', 'Y', 'b_decay', 'K_o2', 'Y_o2', 'lag_time'],
-        False: ['qmax', 'Ks', 'Ki', 'Y', 'b_decay', 'K_o2', 'Y_o2', 'lag_time'],
+        True:  ['μ_max', 'Ks', 'Y', 'b_decay', 'K_o2', 'Y_o2', 'lag_time'],
+        False: ['μ_max', 'Ks', 'Ki', 'Y', 'b_decay', 'K_o2', 'Y_o2', 'lag_time'],
     },
 }
 
@@ -151,7 +151,7 @@ Output:
     )
     parser.add_argument(
         "--contour-pairs", nargs="+", default=None,
-        help="Parameter pairs for contours, e.g. 'qmax,Ks qmax,b_decay'"
+        help="Parameter pairs for contours, e.g. 'μ_max,Ks μ_max,b_decay'"
     )
     parser.add_argument(
         "-v", "--verbose", action="store_true",

@@ -204,7 +204,7 @@ class TwoStageEstimator:
         """
         if default_params is None:
             default_params = {
-                'qmax': 2.0, 'Ks': 500.0, 'Ki': 25000.0,
+                'μ_max': 2.0, 'Ks': 500.0, 'Ki': 25000.0,
                 'Y': 0.35, 'b_decay': 0.01, 'K_o2': 0.15,
                 'Y_o2': 0.8, 'lag_time': 0.0
             }
@@ -288,12 +288,12 @@ class TwoStageEstimator:
             stage1_quality['rmse'] = rmse
 
             # Map to parameter names
-            # μmax relates to qmax via yield: μmax = qmax * Y
-            # We estimate qmax assuming Y ≈ 0.35 as typical
+            # μmax relates to μ_max via yield: μmax = μ_max * Y
+            # We estimate μ_max assuming Y ≈ 0.35 as typical
             Y_assumed = default_params.get('Y', 0.35)
-            qmax_est = mu_max_est / Y_assumed
+            μ_max_est = mu_max_est / Y_assumed
 
-            estimated_params['qmax'] = qmax_est
+            estimated_params['μ_max'] = μ_max_est
             estimated_params['Ks'] = Ks_est
 
             if r_squared < self.quality_threshold:
@@ -322,9 +322,9 @@ class TwoStageEstimator:
             Y_est = self._estimate_yield(conditions)
             if Y_est is not None:
                 initial_guesses['Y'] = Y_est
-                # Update qmax estimate with better Y
-                if 'qmax' in initial_guesses and 'qmax' in estimated_params:
-                    initial_guesses['qmax'] = mu_max_est / Y_est if 'mu_max_est' in dir() else initial_guesses['qmax']
+                # Update μ_max estimate with better Y
+                if 'μ_max' in initial_guesses and 'μ_max' in estimated_params:
+                    initial_guesses['μ_max'] = mu_max_est / Y_est if 'mu_max_est' in dir() else initial_guesses['μ_max']
 
         return TwoStageResult(
             initial_guesses=initial_guesses,
@@ -383,8 +383,8 @@ def estimate_initial_parameters(
         TwoStageResult with estimates
 
     Example:
-        >>> result = estimate_initial_parameters(conditions, ['qmax', 'Ks', 'Y'])
-        >>> print(f"qmax estimate: {result.initial_guesses['qmax']:.3f}")
+        >>> result = estimate_initial_parameters(conditions, ['μ_max', 'Ks', 'Y'])
+        >>> print(f"μ_max estimate: {result.initial_guesses['μ_max']:.3f}")
         >>> if result.warnings:
         >>>     print(f"Warnings: {result.warnings}")
     """

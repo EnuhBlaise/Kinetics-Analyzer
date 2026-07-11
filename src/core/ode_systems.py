@@ -80,19 +80,19 @@ class SingleMonodODE(BaseODE):
         y[1] = X: Biomass concentration (mg cells/L)
 
     Equations:
-        dS/dt = -(1/Y) * q * X
-        dX/dt = (q - b_decay) * X
+        dS/dt = -(1/Y) * μ * X
+        dX/dt = (μ - b_decay) * X
 
-    where q = qmax * S / (Ks + S) * (1 - S/Ki)
+    where μ = μ_max * S / (Ks + S) * (1 - S/Ki)
 
     Attributes:
-        qmax: Maximum specific uptake rate (1/day)
+        μ_max: Maximum specific uptake rate (1/day)
         Ks: Half-saturation constant (mg/L)
         Ki: Substrate inhibition constant (mg/L)
         Y: Yield coefficient (mg cells / mg substrate)
         b_decay: Decay/maintenance coefficient (1/day)
     """
-    qmax: float
+    μ_max: float
     Ks: float
     Ki: float
     Y: float
@@ -112,12 +112,12 @@ class SingleMonodODE(BaseODE):
 
     @property
     def parameter_names(self) -> List[str]:
-        return ["qmax", "Ks", "Ki", "Y", "b_decay"]
+        return ["μ_max", "Ks", "Ki", "Y", "b_decay"]
 
     def get_parameters(self) -> Dict[str, float]:
         """Return current parameter values as dictionary."""
         return {
-            "qmax": self.qmax,
+            "μ_max": self.μ_max,
             "Ks": self.Ks,
             "Ki": self.Ki,
             "Y": self.Y,
@@ -133,13 +133,13 @@ class SingleMonodODE(BaseODE):
         X = max(X, 0.0)
 
         # Specific uptake rate (Monod with inhibition)
-        q = single_monod_term(S, self.qmax, self.Ks, self.Ki)
+        μ = single_monod_term(S, self.μ_max, self.Ks, self.Ki)
 
         # Substrate consumption
-        dSdt = -(1.0 / self.Y) * q * X
+        dSdt = -(1.0 / self.Y) * μ * X
 
         # Biomass growth (growth - decay)
-        dXdt = (q - self.b_decay) * X
+        dXdt = (μ - self.b_decay) * X
 
         return np.array([dSdt, dXdt])
 
@@ -158,13 +158,13 @@ class DualMonodODE(BaseODE):
         y[2] = O2: Dissolved oxygen concentration (mg/L)
 
     Equations:
-        dS/dt = -(1/Y) * q * X
-        dX/dt = (q - b_decay) * X
+        dS/dt = -(1/Y) * μ * X
+        dX/dt = (μ - b_decay) * X
         dO2/dt = -r_O2 + relaxation_to_equilibrium
 
-    where q = qmax * S/(Ks+S) * (1-S/Ki) * O2/(K_o2+O2)
+    where μ = μ_max * S/(Ks+S) * (1-S/Ki) * O2/(K_o2+O2)
     """
-    qmax: float
+    μ_max: float
     Ks: float
     Ki: float
     Y: float
@@ -188,12 +188,12 @@ class DualMonodODE(BaseODE):
 
     @property
     def parameter_names(self) -> List[str]:
-        return ["qmax", "Ks", "Ki", "Y", "b_decay", "K_o2", "Y_o2"]
+        return ["μ_max", "Ks", "Ki", "Y", "b_decay", "K_o2", "Y_o2"]
 
     def get_parameters(self) -> Dict[str, float]:
         """Return current parameter values as dictionary."""
         return {
-            "qmax": self.qmax,
+            "μ_max": self.μ_max,
             "Ks": self.Ks,
             "Ki": self.Ki,
             "Y": self.Y,
@@ -212,16 +212,16 @@ class DualMonodODE(BaseODE):
         O2 = max(O2, self.oxygen_model.o2_min)
 
         # Specific uptake rate (dual Monod)
-        q = dual_monod_term(S, O2, self.qmax, self.Ks, self.Ki, self.K_o2)
+        μ = dual_monod_term(S, O2, self.μ_max, self.Ks, self.Ki, self.K_o2)
 
         # Substrate consumption
-        dSdt = -(1.0 / self.Y) * q * X
+        dSdt = -(1.0 / self.Y) * μ * X
 
         # Biomass growth
-        dXdt = (q - self.b_decay) * X
+        dXdt = (μ - self.b_decay) * X
 
         # Oxygen dynamics with reaeration
-        r_o2 = oxygen_utilization_rate(q, X, self.Y_o2)
+        r_o2 = oxygen_utilization_rate(μ, X, self.Y_o2)
         target_o2 = self.oxygen_model.get_equilibrium_oxygen(r_o2)
         dO2dt = -r_o2 + (target_o2 - O2) * 0.1 # relaxation term
 
@@ -247,11 +247,11 @@ class DualMonodLagODE(BaseODE):
         y[2] = O2: Dissolved oxygen concentration (mg/L)
 
     Equations:
-        dS/dt = -(1/Y) * q * X * lag_factor
-        dX/dt = q * lag_factor * X - b_decay * X
+        dS/dt = -(1/Y) * μ * X * lag_factor
+        dX/dt = μ * lag_factor * X - b_decay * X
         dO2/dt = -r_O2 * lag_factor + relaxation
     """
-    qmax: float
+    μ_max: float
     Ks: float
     Ki: float
     Y: float
@@ -277,12 +277,12 @@ class DualMonodLagODE(BaseODE):
 
     @property
     def parameter_names(self) -> List[str]:
-        return ["qmax", "Ks", "Ki", "Y", "b_decay", "K_o2", "Y_o2", "lag_time"]
+        return ["μ_max", "Ks", "Ki", "Y", "b_decay", "K_o2", "Y_o2", "lag_time"]
 
     def get_parameters(self) -> Dict[str, float]:
         """Return current parameter values as dictionary."""
         return {
-            "qmax": self.qmax,
+            "μ_max": self.μ_max,
             "Ks": self.Ks,
             "Ki": self.Ki,
             "Y": self.Y,
@@ -305,16 +305,16 @@ class DualMonodLagODE(BaseODE):
         lag_factor = lag_phase_factor(t, self.lag_time, self.lag_steepness)
 
         # Specific uptake rate (dual Monod)
-        q = dual_monod_term(S, O2, self.qmax, self.Ks, self.Ki, self.K_o2)
+        μ = dual_monod_term(S, O2, self.μ_max, self.Ks, self.Ki, self.K_o2)
 
         # Substrate consumption (affected by lag)
-        dSdt = -(1.0 / self.Y) * q * X * lag_factor
+        dSdt = -(1.0 / self.Y) * μ * X * lag_factor
 
         # Biomass: growth affected by lag, decay is not
-        dXdt = q * X - self.b_decay * X * lag_factor
+        dXdt = μ * X - self.b_decay * X * lag_factor
 
         # Oxygen dynamics (consumption affected by lag)
-        r_o2 = oxygen_utilization_rate(q, X, self.Y_o2) * lag_factor
+        r_o2 = oxygen_utilization_rate(μ, X, self.Y_o2) * lag_factor
         target_o2 = self.oxygen_model.get_equilibrium_oxygen(r_o2)
         dO2dt = -r_o2 + (target_o2 - O2)
 
@@ -342,14 +342,14 @@ class SingleMonodLagODE(BaseODE):
         y[1] = X: Biomass concentration (mg cells/L)
 
     Equations:
-        dS/dt = -(1/Y) * q * X * lag_factor
-        dX/dt = q * X - b_decay * X * lag_factor
+        dS/dt = -(1/Y) * μ * X * lag_factor
+        dX/dt = μ * X - b_decay * X * lag_factor
 
-    where q = qmax * S / (Ks + S) * (1 - S/Ki)
+    where μ = μ_max * S / (Ks + S) * (1 - S/Ki)
           lag_factor = sigmoid(t, lag_time)
 
     Attributes:
-        qmax: Maximum specific uptake rate (1/day)
+        μ_max: Maximum specific uptake rate (1/day)
         Ks: Half-saturation constant (mg/L)
         Ki: Substrate inhibition constant (mg/L)
         Y: Yield coefficient (mg cells / mg substrate)
@@ -357,7 +357,7 @@ class SingleMonodLagODE(BaseODE):
         lag_time: Duration of the lag phase (days)
         lag_steepness: Steepness of the lag sigmoid transition
     """
-    qmax: float
+    μ_max: float
     Ks: float
     Ki: float
     Y: float
@@ -379,12 +379,12 @@ class SingleMonodLagODE(BaseODE):
 
     @property
     def parameter_names(self) -> List[str]:
-        return ["qmax", "Ks", "Ki", "Y", "b_decay", "lag_time"]
+        return ["μ_max", "Ks", "Ki", "Y", "b_decay", "lag_time"]
 
     def get_parameters(self) -> Dict[str, float]:
         """Return current parameter values as dictionary."""
         return {
-            "qmax": self.qmax,
+            "μ_max": self.μ_max,
             "Ks": self.Ks,
             "Ki": self.Ki,
             "Y": self.Y,
@@ -404,13 +404,13 @@ class SingleMonodLagODE(BaseODE):
         lag_factor = lag_phase_factor(t, self.lag_time, self.lag_steepness)
 
         # Specific uptake rate (Monod with inhibition)
-        q = single_monod_term(S, self.qmax, self.Ks, self.Ki)
+        μ = single_monod_term(S, self.μ_max, self.Ks, self.Ki)
 
         # Substrate consumption (affected by lag)
-        dSdt = -(1.0 / self.Y) * q * X * lag_factor
+        dSdt = -(1.0 / self.Y) * μ * X * lag_factor
 
         # Biomass: growth affected by lag, decay is not
-        dXdt = q * X - self.b_decay * X * lag_factor
+        dXdt = μ * X - self.b_decay * X * lag_factor
 
         return np.array([dSdt, dXdt])
 

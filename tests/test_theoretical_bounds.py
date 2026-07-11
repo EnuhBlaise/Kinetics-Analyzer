@@ -7,7 +7,7 @@ Tests cover:
 - Theoretical yield (Y) ceilings
 - Theoretical oxygen demand (ThOD)
 - Y_o2 ceiling derivation
-- qmax heuristic classification
+- μ_max heuristic classification
 - Full report generation
 - Config file integration
 """
@@ -26,7 +26,7 @@ from src.utils.theoretical_bounds import (
     theoretical_yield_max,
     theoretical_oxygen_demand,
     yield_oxygen_ceiling,
-    qmax_heuristic,
+    μ_max_heuristic,
     compute_bounds_report,
     compute_from_config,
     compare_with_current_bounds,
@@ -224,29 +224,29 @@ class TestYo2Ceiling:
 
 
 # ══════════════════════════════════════════════════════════════════════
-#  qmax Heuristic
+#  μ_max Heuristic
 # ══════════════════════════════════════════════════════════════════════
 
 class TestQmaxHeuristic:
-    """Tests for substrate classification and qmax ceiling."""
+    """Tests for substrate classification and μ_max ceiling."""
 
     def test_glucose_is_sugar(self):
-        result = qmax_heuristic({"C": 6, "H": 12, "O": 6}, 180.16)
+        result = μ_max_heuristic({"C": 6, "H": 12, "O": 6}, 180.16)
         assert result["substrate_class"] == "simple_sugar"
-        assert result["qmax_ceiling"] == 30.0
+        assert result["μ_max_ceiling"] == 30.0
 
     def test_coumaric_acid_is_aromatic(self):
-        result = qmax_heuristic({"C": 9, "H": 8, "O": 3}, 164.16)
+        result = μ_max_heuristic({"C": 9, "H": 8, "O": 3}, 164.16)
         assert result["substrate_class"] == "aromatic"
-        assert result["qmax_ceiling"] == 10.0
+        assert result["μ_max_ceiling"] == 10.0
 
     def test_vanillic_acid_is_aromatic(self):
-        result = qmax_heuristic({"C": 8, "H": 8, "O": 4}, 168.15)
+        result = μ_max_heuristic({"C": 8, "H": 8, "O": 4}, 168.15)
         assert result["substrate_class"] == "aromatic"
 
     def test_degree_of_unsaturation(self):
         """p-HBA C7H6O3: DoU = (14+2−6)/2 = 5"""
-        result = qmax_heuristic({"C": 7, "H": 6, "O": 3}, 138.12)
+        result = μ_max_heuristic({"C": 7, "H": 6, "O": 3}, 138.12)
         assert result["degree_of_unsaturation"] == 5.0
 
 
@@ -263,7 +263,7 @@ class TestFullReport:
         assert report.mw_consistent
         assert report.gamma_s == pytest.approx(4.0)
         assert "Y" in report.suggested_bounds
-        assert "qmax" in report.suggested_bounds
+        assert "μ_max" in report.suggested_bounds
 
     def test_report_to_dict(self):
         report = compute_bounds_report("Glucose", "C6H12O6", 180.16)
@@ -271,7 +271,7 @@ class TestFullReport:
         assert "yield" in d
         assert "oxygen_demand" in d
         assert "Y_o2" in d
-        assert "qmax" in d
+        assert "μ_max" in d
         assert "suggested_bounds" in d
 
     def test_report_summary_text(self):
@@ -316,11 +316,11 @@ class TestConfigIntegration:
                 "unit": "mg/L",
             },
             "initial_guesses": {
-                "qmax": 5.0, "Ks": 100.0, "Y": 0.4,
+                "μ_max": 5.0, "Ks": 100.0, "Y": 0.4,
                 "b_decay": 0.01, "K_o2": 0.1, "Y_o2": 0.8,
             },
             "bounds": {
-                "qmax": [0.1, 50.0], "Ks": [1.0, 1000.0], "Y": [0.01, 2.0],
+                "μ_max": [0.1, 50.0], "Ks": [1.0, 1000.0], "Y": [0.01, 2.0],
                 "b_decay": [0.001, 0.5], "K_o2": [0.01, 1.0],
                 "Y_o2": [0.05, 5.0],
             },
@@ -348,7 +348,7 @@ class TestConfigIntegration:
         report = compute_from_config(cfg)
         comparison = compare_with_current_bounds(report, cfg)
         assert "Y" in comparison
-        assert "qmax" in comparison
+        assert "μ_max" in comparison
 
     def test_compare_flags_high_bounds(self, tmp_path):
         """A config with Y upper bound >> theoretical ceiling → ⚠ HIGH."""

@@ -171,7 +171,7 @@ class ObjectiveFunction:
 
         if self.model_type == "single_monod":
             return SingleMonodODE(
-                qmax=param_dict["qmax"],
+                μ_max=param_dict["μ_max"],
                 Ks=param_dict["Ks"],
                 Ki=ki_value,
                 Y=param_dict["Y"],
@@ -179,7 +179,7 @@ class ObjectiveFunction:
             )
         elif self.model_type == "single_monod_lag":
             return SingleMonodLagODE(
-                qmax=param_dict["qmax"],
+                μ_max=param_dict["μ_max"],
                 Ks=param_dict["Ks"],
                 Ki=ki_value,
                 Y=param_dict["Y"],
@@ -188,7 +188,7 @@ class ObjectiveFunction:
             )
         elif self.model_type == "dual_monod":
             return DualMonodODE(
-                qmax=param_dict["qmax"],
+                μ_max=param_dict["μ_max"],
                 Ks=param_dict["Ks"],
                 Ki=ki_value,
                 Y=param_dict["Y"],
@@ -199,7 +199,7 @@ class ObjectiveFunction:
             )
         elif self.model_type == "dual_monod_lag":
             return DualMonodLagODE(
-                qmax=param_dict["qmax"],
+                μ_max=param_dict["μ_max"],
                 Ks=param_dict["Ks"],
                 Ki=ki_value,
                 Y=param_dict["Y"],

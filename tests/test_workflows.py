@@ -22,7 +22,7 @@ def sample_config():
         name="TestSubstrate",
         molecular_weight=180.0,
         initial_guesses={
-            "qmax": 2.5,
+            "μ_max": 2.5,
             "Ks": 400,
             "Ki": 25000,
             "Y": 0.35,
@@ -32,7 +32,7 @@ def sample_config():
             "lag_time": 3.0
         },
         bounds={
-            "qmax": (0.1, 10),
+            "μ_max": (0.1, 10),
             "Ks": (10, 2000),
             "Ki": (50, 50000),
             "Y": (0.1, 1.0),
@@ -82,7 +82,7 @@ class TestSingleMonodWorkflow:
         """Test parameter names for single Monod."""
         with tempfile.TemporaryDirectory() as tmpdir:
             workflow = SingleMonodWorkflow(sample_config, sample_data, tmpdir)
-            assert "qmax" in workflow.parameter_names
+            assert "μ_max" in workflow.parameter_names
             assert "Ks" in workflow.parameter_names
             assert "lag_time" not in workflow.parameter_names
             assert len(workflow.parameter_names) == 5
@@ -91,7 +91,7 @@ class TestSingleMonodWorkflow:
         """Test ODE system creation."""
         with tempfile.TemporaryDirectory() as tmpdir:
             workflow = SingleMonodWorkflow(sample_config, sample_data, tmpdir)
-            params = {"qmax": 2.5, "Ks": 400, "Ki": 25000, "Y": 0.35, "b_decay": 0.01}
+            params = {"μ_max": 2.5, "Ks": 400, "Ki": 25000, "Y": 0.35, "b_decay": 0.01}
             ode = workflow.create_ode_system(params)
             assert ode.n_states == 2
 
@@ -149,14 +149,14 @@ class TestWorkflowResult:
         from src.fitting.optimizer import OptimizationResult
 
         opt_result = OptimizationResult(
-            parameters={"qmax": 2.5, "Ks": 400},
+            parameters={"μ_max": 2.5, "Ks": 400},
             statistics={"R_squared": 0.95, "RMSE": 10.5},
             success=True,
             message="Success",
             n_iterations=100,
             n_function_evals=500,
-            initial_guess={"qmax": 2.0, "Ks": 300},
-            bounds={"qmax": (0.1, 10), "Ks": (10, 2000)},
+            initial_guess={"μ_max": 2.0, "Ks": 300},
+            bounds={"μ_max": (0.1, 10), "Ks": (10, 2000)},
             method="L-BFGS-B"
         )
 

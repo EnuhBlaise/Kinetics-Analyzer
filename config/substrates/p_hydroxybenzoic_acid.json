@@ -6,7 +6,7 @@
     "unit": "mg/L"
   },
   "initial_guesses": {
-    "qmax": 10.0,
+    "μ_max": 10.0,
     "Ks": 50.0,
     "Ki": 1500.0,
     "Y": 0.1,
@@ -16,7 +16,7 @@
     "lag_time": 0.2
   },
   "bounds": {
-    "qmax": [0.3, 20.0],
+    "μ_max": [0.3, 20.0],
     "Ks": [1.0, 500.0],
     "Ki": [1.0, 2000.0],
     "Y": [0.01, 0.5],
@@ -40,7 +40,7 @@
     "description": "Configuration for p-hydroxybenzoic acid (p-HBA) degradation kinetics",
     "typical_yield": "0.35 mgCells/mgpHBA",
     "Units": {
-      "qmax": "1/day",
+      "μ_max": "1/day",
       "Ks": "mg/L",
       "Ki": "mg/L",
       "Y": "mgCells/mgSubstrate",
